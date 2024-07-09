@@ -8,28 +8,46 @@
 % 3/2021: voorpagina/header opgekuist
 % 3/2021: nummering question per exercise/example (ipv per activity)
 % 3/2021: redefine section/subsection uitgecommentarieerd( to be verified?)
+% 1/2023: layout gemoderniseerd (op basis van het Overleaf Template voor Bachelorpapers Wetenschappen)
 %
+
+\usepackage{silence}
+%Disable all warnings issued by latex starting with "You have..."
+\WarningFilter{latex}{You have requested package}    % because we typically request ../printstyle (or ./printstyle)
+
 \NeedsTeXFormat{LaTeX2e}% LaTeX 2.09 can't be used (nor non-LaTeX)
 [1994/12/01]% LaTeX date must be December 1994 or later
-\ProvidesPackage{printstyle}[2021/05/10 v0.6]   
+\ProvidesPackage{printstyle}[2023/01/12 v0.7]   
 \ProcessOptions\relax
 
 \usepackage{stix}
 \renewcommand{\familydefault}{\sfdefault}    % sans-serif by default
+% BUT CAUSES WARNINGS
+% Font shape `T1/cmss/m/sc' in size <9> not available
+% (Font)	Font shape `T1/cmr/m/sc' tried instead.
+
 
 % Alternative font: a version of Bitstream Vera% Sans.
 %\let\warning\relax
 %\usepackage{arev}
 %\usepackage[fontsize=9]{scrextend}
 
+%\usepackage[notmath]{sansmathfonts}
+% \usepackage{lmodern} % To switch to Latin Modern
 \usepackage[T1]{fontenc} %%Clobbers \d!!!
 \renewcommand{\d}{\mathop{}\!d} %% unclobbers \d
 %\usepackage{gillius}
 \usepackage{ccicons}
 %\usepackage{microtype}
+%\usepackage{bold-extra}
+%\usepackage{anyfontsize}
 
-\usepackage[yyyymmdd,hhmmss]{datetime}    % for \currenttime
+
+\usepackage[yyyymmdd]{datetime}    % for \currenttime
 %\usepackage{totpage}  % for LastPage  (ie Page n of M)
+
+\usepackage{textpos}   % voorpagina
+\usepackage{pdflscape} % include posters
 
 %\usepackage{rotating}
 
@@ -39,15 +57,16 @@
 \usepackage[margin=.5in, includehead, includefoot, hmargin={.8in,.5in}, a4paper]{geometry}
 
 %
-% bladschikking (from macro!)
-%
+% bladschikking (from old Zomercursus macro's)
+% zie https://en.wikibooks.org/wiki/LaTeX/Page_Layout 
 \voffset=-1in
-\topmargin=1.5 cm
-\headheight=2cm
-\headsep=1cm
-\textheight=22cm
-\footskip=1.2cm
 \hoffset=-1in
+
+\topmargin=1 cm
+\headheight=2.5cm
+\headsep=0.5cm
+\textheight=23cm
+\footskip=1.2cm
 \oddsidemargin=2.5cm
 \evensidemargin=2.5cm
 \textwidth=15.5cm
@@ -63,79 +82,101 @@
 \providebool{printactivityurl}
 \providebool{printcontinuouspagenumbers}
 
-% for PDF by activity, it makes sens not to include the title, as it is in the header already
+% for PDF by activity, it makes sense not to include the title, as it is in the header already
 \printactivitytitletrue   % overwrite AFTER loading printstyle ...
 
 
-% Store usual title commands as other named once
-%\makeatletter % Make sure @ is a letter so it can be used
-%\let\mytitle\@title
-%\makeatother
 % Store original \title and \maketitle 
 %\let\othertitle\title
 \let\othermaketitle\maketitle
 
-%\makeatletter
-%\patchcmd{\@maketitle}{\newpage}{}{}{}      % test to prevent empty pages at begin (end?) of part
-%\makeatother
-
 % % Redefine maketitle to give course packet title page and toc.
-%\renewcommand{\title}[1]{ %   NOT NEEDED ???
-%    \renewcommand\mytitle{#1}
-%    \othertitle{#1}
-%%    \markboth{#1}{#1}   % fix wrong section on last page of activity          
-%}
 
 %
 % provide defaults for frontpage/headers/footers
+%  ( Overwrite in global.sty !)
 %
 \providecommand{\xmmodulenaam}{Module}
-\providecommand{\xmcursusnaam}{Zomercursus Wiskunde}
+\providecommand{\xmcursusnaam}{Basiskennis Wiskunde}
 \providecommand{\xmlogo}{
- \   % empty generates error "no line to end here' ...
- %   	\begin{minipage}[c]{2cm}\includegraphics[width=2cm]{./x_zomercursus/sedes.jpg}\end{minipage}
+%    	\begin{minipage}[c]{2cm}\includegraphics[width=2cm]{./x_zomercursus/sedes.jpg}\end{minipage}
 }
 \providecommand{\xmorganisatienaam}{{\textsc{KU Leuven}}}
-\providecommand{\xmafdelingsnaam}{{\textsc{Groep Wetenschap \& Technologie}}}
-\providecommand{\xmcursusversie}{(\small{versie \today} \xmtoonprintopties)}
+\providecommand{\xmafdelingsnaam}{{\textsc{IDL Project Basiswiskunde}}}
+\providecommand{\xmcursusversie}{\scriptsize{\yyyymmdddate\today\xmtoonprintopties.\the\currentminute}}
 
-\providecommand{\xmtoonprintopties}{
-	\ifhandout H\fi
-	\ifprintbasicversion B\fi
+\providecommand{\xmtoonprintopties}{%
+	\ifhandout H\fi%
+	\ifprintbasicversion B\fi%
 }
-
 
 \providecommand{\xmmodulenummer}{}   % print bv "Module xxx" op titelbladen
-\providecommand{\xmcopyright}{
-%    \doclicenseImage[imagewidth=2em]\doclicenseNameRef\begin{minipage}[c]{1.1cm}\includegraphics[height=1.8cm]{./x_zomercursus/sedes.jpg}\end{minipage}
-    \doclicenseImage[imagewidth=2em]\doclicenseNameRef
+\providecommand{\xmcopyright}{%
+    \doclicenseImage[imagewidth=2em]\doclicenseNameRef%
+    %\begin{minipage}[c]{1.1cm}\includegraphics[height=1.8cm]{./x_zomercursus/sedes.jpg}\end{minipage}
+    \\
+    \xmorganisatienaam\ (\xmcursusversie)
 }
 
-% print een titelblad, globaal of per module (gebaseerd op bovenstaande parameters)
+% kleuren voor voorpagina/header/footer
+%\definecolor{green}{RGB}{172,196,0}
+\definecolor{bluetitle}{RGB}{29,141,176}
+\definecolor{blueaff}{RGB}{0,0,128}
+%\definecolor{blueline}{RGB}{82,189,236}
+\definecolor{blueKUL}{rgb}{0.114, 0.553, 0.69}  % KU Leuven Blauw
+\colorlet{blueline}{blueKUL!20}
+
+% print een titelblad, globaal of per module (gebaseerd op bovenstaande parameters \xmXXX)
 \newcommand{\xmPrintFrontPage}[1]{
-    \thispagestyle{empty}    
-    \hrule
-    \begin{center}
-    	{\large {\textsc{\xmcursusnaam}}}\\
-    	\bigskip
-        \xmlogo \\
-        \bigskip
-        \xmorganisatienaam\\
-    	\xmafdelingsnaam\\
-    	\bigskip\bigskip\bigskip
-    	{\large 
-         \xmmodulenummer
-         \bigskip 
-         \textsc{#1}\\
-        }
-       	\bigskip
-         \xmcursusversie
-    	\bigskip    	
-    \end{center}    
-    \hrule
-    \afterpage{\thispagestyle{firstpage}}         
-    \newpage
-    \pagestyle{otherpage}  
+{
+    % BRON: https://www.overleaf.com/project/63bd40db464ab50421f12f2b
+    %        ( KUL Bachelorproef template, Arthur Depicker, Niels Souverijns)
+    % pagina-instellingen
+
+% define units for the text blocks
+\setlength{\TPHorizModule}{1mm}
+\setlength{\TPVertModule}{1mm}
+
+\thispagestyle{empty}
+%% \newcommand{\form}[1]{\scalebox{1.087}{\boldmath{#1}}} % not used anymore
+\sffamily
+%
+\begin{textblock}{191}(-24,-11)
+%\colorbox{bluetitle}{\hspace{123mm}\ \parbox[c][18truemm]{90mm}{\fontsize{20}{22}\selectfont\textcolor{white}{\textsc\xmafdelingsnaam}}}
+\colorbox{bluetitle}{\parbox[c][18truemm]{\paperwidth}{\hfill\fontsize{14}{16}\selectfont\bfseries\textcolor{white}{\textsc\xmafdelingsnaam\quad}}}
+\end{textblock}
+%
+%\textblockorigin{-24⟩}{-11}
+\begin{textblock}{70}(-18,-19)
+\textblockcolour{}
+\includegraphics*[height=19.8truemm]{../pictures/kuleuven_logo.png}
+\end{textblock}
+%
+\begin{textblock}{160}(-6,63)
+    \textblockcolour{}
+    \vspace{-\parskip}
+    \flushleft
+\fontsize{20}{22}\selectfont\xmcursusnaam\\[2cm]
+\fontsize{40}{42}\selectfont \textcolor{bluetitle}{
+    %\fontsize{20}{22}\selectfont YY #1 YY \form{$S=\pi r^2$\textsl{(facultatief)}}
+    \xmmodulenummer
+    \bigskip 
+    \textsc{#1}
+    }
+
+\end{textblock}
+
+\begin{textblock}{191}(-24,220)
+    {\color{blueline}\rule{580pt}{5.5pt}}
+
+    \flushright(Versie \xmcursusversie)
+\end{textblock}
+%
+\vfill
+
+\afterpage{\thispagestyle{empty}}         
+
+}
 }
 
 \usepackage{afterpage}
@@ -146,45 +187,91 @@
 
 \def\mymoduletitle{}   % will be set by \part
 
-
 \fancypagestyle{otherpage}{%  op de eerste pagina BOLD titel in BLAUW
+    \renewcommand{\headrulewidth}{0.4pt}
 % \rightmark = activity-titel
-    \fancyhead{}  
-    \fancyhead[RO]{\small{\textsc{p. \thepage}\rblob\\\ }}
-    \fancyhead[LE]{\small{\textsc{p. \thepage}\lblob\\\ }}
-    \fancyhead[C]{\textsc{\firstleftmark}} 
+\makeatletter
+\fancyhead{}  
+\if@twoside
+    \fancyhead[RO]{\small{p.\textsc{\thepage}\rblob\\\ \\\ }}
+    \fancyhead[LE]{\small{p.\textsc{\thepage}\lblob\\\ \\\ }}
+    % \fancyhead[C]{\textsc{\firstleftmark}} 
+    \fancyhead[C]{\ \\\ \\
+    {\makebox[\textwidth][c]{\selectfont\bfseries\color{black}\textsc{\firstleftmark}}}}
+
     % Maak onderscheid tussen (volledige) xourses of (aparte) activities
     \ifdefined\isXourse  
        \fancyhead[LO,RE]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}\\
+                         \ \\
                          \ } 
     \fi
     
-    \fancyfoot[RO,LE]{\textsc{\small \xmcursusnaam\ \xmcursusversie\\\xmafdelingsnaam}}
+    %\fancyfoot[RO,LE]{\textsc{\small \xmcursusnaam\ \xmcursusversie\\\xmafdelingsnaam}}
+    \fancyfoot[RO,LE]{\textsc{\small \xmcursusnaam\\\xmafdelingsnaam}}   %  versie enkel op eerste pagina
     \fancyfoot[C]{}
     \fancyfoot[LO,RE]{\xmcopyright}
+\else% oneside
+    \fancyhead[R]{\small{p. \textsc{\thepage}\lblob\\\ \\\ }}
+    %\fancyhead[C]{\textsc{\firstleftmark}} 
+    \fancyhead[C]{\ \\\ \\ 
+    {\makebox[\textwidth][c]{\selectfont\bfseries\color{black}\textsc{\firstleftmark}}}}
+
+    % Maak onderscheid tussen (volledige) xourses of (aparte) activities
+    \ifdefined\isXourse  
+       \fancyhead[L]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}\\
+                         \ \\ 
+                         \ } 
+    \fi
     
+    \fancyfoot[R]{\textsc{\small \xmcursusnaam\ \\\xmafdelingsnaam}}
+    \fancyfoot[C]{}
+    \fancyfoot[L]{\xmcopyright}
+\fi
+\makeatother   
     %\fancyhead[RO]{\textsc{\thepage/\pageref{LastPage}}}
     %\fancyhead[C]{\small{\textsc{\mytitle}}}
 }
 
 \fancypagestyle{firstpage}{%  op de eerste pagina BOLD titel in BLAUW
-    \fancyhead[RO]{\small{\textsc{p. \thepage}\\\rbigblob}} % Rechts bij oneven pagina's
-    \fancyhead[LE]{\small{\textsc{p. \thepage}\\\lbigblob}} % Links bij even pagina's
-    \ifdefined\isXourse      
-        \fancyhead[LO]{\colorbox{blue!10}{\makebox[\textwidth][l]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}}}\\ \ }
-        \fancyhead[RE]{\colorbox{blue!10}{\makebox[\textwidth][r]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}}}\\ \ }
+    \renewcommand{\headrulewidth}{0pt}
+\makeatletter
+\if@twoside
+    \fancyhead[RO]{\small{p.\textsc{\thepage}\\\ \\\rbigblob}} % Rechts bij oneven pagina's
+    \fancyhead[LE]{\small{p.\textsc{\thepage}\\\ \\\lbigblob}} % Links bij even pagina's
+    \ifdefined\isXourse 
+        % NOT NEEDED: standrad LO/RE work better  (this overwrite pagenumbers on EVEN pages ???)     
+        %\fancyhead[LO]{\colorbox{white}{\makebox[\textwidth][l]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}}}\\ \ }
+        %\fancyhead[RE]{\colorbox{white}{\makebox[\textwidth][r]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}}}\\ \ }
     \else
-        \fancyhead[LO]{\colorbox{blue!10}{\makebox[\textwidth][l]{\small{\textsc{\phantom{M}}}}}\\ \ }
-        \fancyhead[RE]{\colorbox{blue!10}{\makebox[\textwidth][r]{\small{\textsc{\phantom{M}}}}}\\ \ }
+        \fancyhead[LO]{\colorbox{blueline}{\parbox{\textwidth}{\makebox[\textwidth][l]{\small{\textsc{\phantom{M}}}\\ \ \\ \ }}}}
+        \fancyhead[RE]{\colorbox{blueline}{\parbox{\textwidth}{\makebox[\textwidth][r]{\small{\textsc{\phantom{M}}}\\ \ \\ \ }}}}
     \fi
 %   \fancyhead[C]{\ \\
-%   \colorbox{blue!10}{\makebox[\textwidth][c]{\selectfont\bfseries\color{blue}\rightmark}}} 
-    \fancyhead[C]{\ \\
-    \colorbox{blue!10}{\makebox[\textwidth][c]{\selectfont\bfseries\color{blue}\textsc{\firstleftmark}}}} 
+%   \colorbox{blueline}{\makebox[\textwidth][c]{\selectfont\bfseries\color{blue}\rightmark}}} 
+    \fancyhead[C]{\ \\\ \\
+    \colorbox{blueline}{\makebox[\textwidth][c]{\selectfont\bfseries\color{black}\textsc{\firstleftmark}}}} 
     
-    \fancyfoot[RO,LE]{\textsc{\small \xmcursusnaam\ \xmcursusversie\\\xmafdelingsnaam}}
+    \fancyfoot[RO,LE]{\textsc{\small \xmcursusnaam\\\xmafdelingsnaam}}
     \fancyfoot[C]{}
     \fancyfoot[LO,RE]{\xmcopyright}
+\else%oneside
+    \fancyhead[R]{\small{p. \textsc{\thepage}\\\ \\\rbigblob}} % Rechts bij oneven pagina's
+    \ifdefined\isXourse      
+        \fancyhead[L]{\colorbox{white}{\makebox[\textwidth][l]{\small{\textsc{\xmmodulenaam\  \arabic{part}: \mymoduletitle}}}}\\ \ \\\ }
+    \else
+        \fancyhead[L]{\colorbox{blueline}{\parbox{\textwidth}{\makebox[\textwidth][l]{\small{\textsc{\phantom{M}}}
+        \\ \ \\ \ }}}
+        }
+    \fi
+    \fancyhead[C]{\ \\
+    \colorbox{blueline}{\makebox[\textwidth][c]{\selectfont\bfseries\color{black}\textsc{\firstleftmark}}}} 
+    
+    \fancyfoot[R]{\textsc{\small \xmcursusnaam\\\xmafdelingsnaam}}
+    \fancyfoot[C]{}
+    \fancyfoot[L]{\xmcopyright}
+\fi
+\makeatother
+
     
 }
 
@@ -192,7 +279,7 @@
 
 % Print een zwarte BLOB  rechts op de pagina bij elke nieuwe activity
 %    ( handig bij het bladeren door de PDF ... ?)
-\ifdefined\isXourse   % enkel in xourse, niet bij individuele ximera
+\ifdefined\xmprintblob   % deprecated; does not work anymore ...? (2/2023)
 \setlength{\unitlength}{18mm}
 %\newcommand{\blob}{\rule[-.2\unitlength]{1\unitlength}{.25\unitlength}}
 \newcommand{\blob}{{\color{gray}\rule{.5\unitlength}{.2\unitlength}}} 
@@ -214,7 +301,7 @@
     \begin{picture}(0,0)
     \put(0,-0.2)
      {     % \framebox{\selectfont\bfseries\color{blue}\thetitlenumber}
-           \colorbox{blue!10}{\makebox(1,0.56){\selectfont\bfseries\color{blue}\thetitlenumber}}
+           \colorbox{blueline}{\makebox(1,0.56){\selectfont\bfseries\color{white}\thetitlenumber}}   % Mmm, WRONG for sections
      }
     \end{picture}
 }
@@ -222,33 +309,19 @@
     \begin{picture}(0,0)
     \put(-1.15,-0.2)
      {     % \framebox{\selectfont\bfseries\color{blue}\thetitlenumber}
-	     \colorbox{blue!10}{\makebox(1,0.56){\selectfont\bfseries\color{blue}\thetitlenumber}}
+	     \colorbox{blueline}{\makebox(1,0.56){\selectfont\bfseries\color{white}\thetitlenumber}}
      }
     \end{picture}
 }
 \else
+\newcommand\blob{}
 \newcommand\rblob{}
 \newcommand\lblob{}
+\newcommand\lbigblob{}
 \newcommand\rbigblob{}
 \fi
 
-%\usepackage{minitoc}
-%\usepackage{tocloft}
-
-%\advance\cftsecnumwidth 0.5em\relax
-%\advance\cftsubsecnumwidth 0.5em\relax
-%\advance\cftsubsubsecnumwidth 1em\relax
-%\advance\cftparanumwidth 3em\relax
-%\advance\cftsubparanumwidth 3em\relax
-%
-%\setlength\cftsubsecindent{1em}\relax
-%\setlength\cftsubsubsecindent{ 1em}\relax
-%\setlength\cftparaindent{1em}\relax
-%\setlength\cftsubparaindent{1em}\relax
-
-
 \makeatletter
-
 %
 % Voorbereiding MAIN FRONTPAGE (Algemene titlepagina, en tableofcontents)
 %
@@ -367,6 +440,7 @@
          \setcounter{question}{0}
          \setcounter{subsection}{0}
          \setcounter{subsubsection}{0}         
+         \setcounter{hint}{0}         
     }
     
     \markboth{\thetitlenumber\hspace{1em} \@title}{\thetitlenumber\hspace{1em} \@title}   % fix wrong section on last page of activity    
@@ -527,6 +601,12 @@
 \newcommand{\colorexample}{blue}
 \newcommand{\colorremark}{yellow}
 
+\tcbset{every box/.style={
+    % before upper={\vspace*{-0.45cm}}, %% HACK: remove whitespace on top !!!
+    parbox=false,                    %% Get paragraph-spacing ...  %% !!GLOBAL CHANGES ON ALMOST EVERY PAGE !!%%
+    }
+}   
+
 \theoremstyle{definition} % Bold titels
 
 \makeatletter
@@ -546,6 +626,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -565,6 +646,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -584,6 +666,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -603,6 +686,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -622,6 +706,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 
@@ -643,6 +728,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 \tcolorboxenvironment{corollary*}{
     boxrule=0pt,
@@ -654,6 +740,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -673,6 +760,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 %\newcounter{proof}
@@ -694,6 +782,7 @@
 %    before skip=10pt,
 %    after skip=10pt,
 %    breakable,
+%before upper={\vspace*{-0.45cm}},
 %}
 
 \makeatletter
@@ -713,6 +802,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -725,13 +815,15 @@
 \tcolorboxenvironment{example}{
     boxrule=0pt,
     boxsep=0pt,
-    colback={white},
+    %colback={white},
+    colback={\colorexample!3!white},
     enhanced jigsaw,
     borderline west={2pt}{0pt}{\colorexample!75!black},
     sharp corners,
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 % remove italics def
@@ -764,6 +856,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -783,6 +876,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 \makeatletter
@@ -802,6 +896,7 @@
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 
 
@@ -822,9 +917,9 @@
 % bij een oefening (natuurlijk) niet
 % todo: idem voor wordChoice ?
 % todo: keuze om ook oplossing al dan niet te printen
-\AtBeginEnvironment{warning}{\setcounter{question}{0}}
-\AtBeginEnvironment{exercise}{\setcounter{question}{0}}
-\AtBeginEnvironment{example}{\setcounter{question}{0} \handoutfalse}    % print oplossingen in voorbeelden
+\AtBeginEnvironment{warning}{\setcounter{question}{0}\setcounter{hint}{0}}
+\AtBeginEnvironment{exercise}{\setcounter{question}{0}\setcounter{hint}{0}}
+\AtBeginEnvironment{example}{\setcounter{question}{0}\setcounter{hint}{0}\handoutfalse}    % print oplossingen in voorbeelden
 
 \ifdefined\isXourse
    \ifdefined\xmuitweiding
@@ -849,11 +944,12 @@
     boxsep=0pt,
     colback={gray!2!white},
     enhanced jigsaw,
-    borderline west={2pt}{0pt}{gray!55!black},
+    borderline west={2pt}{0pt}{red!55!black},
     sharp corners,
     before skip=10pt,
     after skip=10pt,
     breakable,
+    before upper={\vspace*{-0.45cm}},
 }
 \fi
 
@@ -904,25 +1000,25 @@
        }
 \else
 \renewenvironment{feedback}[1][attempt]{ % anders,ingespringt tonen
-	\makeatletter
-	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
-	
-	\begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-		\item[\hskip \labelsep\small\slshape\bfseries\ifthenelse{\equal{\detokenize{#1}}{\detokenize{solution}}}
+        \makeatletter
+        \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+
+        \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
+                \item[\hskip \labelsep\small\slshape\bfseries\ifthenelse{\equal{\detokenize{#1}}{\detokenize{solution}}}
                     {\nlen{Uitwerking}{Elaboration}}
                     {Feedback}:% Format the "Feedback" label. Don't forget the space.
-	%	(\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
-		\hspace{2ex}]\small%\slshape% Insert some space before the actual feedback given.
-	}{
-	\end{trivlist} 
+        %       (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+                \hspace{2ex}]\small%\slshape% Insert some space before the actual feedback given.
+        }{
+        \end{trivlist}
     \makeatother
 }
 \fi
 
-%% Hides expandable
+% Expandable printed a bit smaller (TBI)
 \let\expandable\relax
 \let\endexpandable\relax
-\NewEnviron{expandable}{}
+\NewEnviron{expandable}[2]{\begin{#1}[#2]\nl\smaller\BODY\end{#1}}
 
 %% Compress dialogue
 \renewenvironment{dialogue}{%
@@ -953,14 +1049,16 @@
 }
 
 % Gecopieerd van ximera.cls, o.a. om te vernederlandsen
+\providecommand{\multipleChoiceLabel}{\hskip \labelsep\small\bfseries \nlen{Meerkeuze:}{Multiple Choice:}}
+\providecommand{\multipleChoiceNColumns}{}
 \makeatletter
 \renewenvironment{multipleChoice}[1][]
 {% Environment Start Code
 \setkeys{multipleChoice}{#1}%
 \recordvariable{\mc@id}%
 \begin{trivlist}
-\item[\hskip \labelsep\small\bfseries \nlen{Meerkeuze:}{Multiple Choice:}]\hfil
-\begin{xmmulticols}
+\item[\multipleChoiceLabel]\hfil
+\begin{xmmulticols}[\multipleChoiceNColumns]
 \begin{enumerate}
 }% Note this means that \item has to be the first line after \begin{multipleChoice}.
 {% Environment End Code
@@ -998,7 +1096,7 @@
 
 \hypersetup{
     colorlinks=true,  
-    urlcolor=blue,
+    urlcolor=xmblue,
 }
 
 %
@@ -1012,7 +1110,7 @@
     \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 
     \begin{trivlist}% Begin the trivlist to use formating of the label.
-    \item[\hskip \labelsep\small\slshape\bfseries \nlen{Uitwerking}{Elaboration}: \hspace{2ex}]\small
+    \item[\hskip \labelsep\small\bfseries \nlen{Uitwerking}{Elaboration}: \hspace{2ex}]\small
     \BODY
     \end{trivlist}
     }
@@ -1023,7 +1121,7 @@
     \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 
     \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-    \item[\hskip \labelsep\small\slshape\bfseries \nlen{Uitwerking}{Elaboration}: \hspace{2ex}]\small
+    \item[\hskip \labelsep\small\bfseries \nlen{Uitwerking}{Elaboration}: \hspace{2ex}]\small
     \BODY
     \end{trivlist}
     }
@@ -1066,13 +1164,65 @@
 \renewcommand*\env@matrix[1][r]{\hskip -\arraycolsep
   \let\@ifnextchar\new@ifnextchar
     \array{*\c@MaxMatrixCols #1}}
+\makeatother
+
+\makeatletter
+\newtheoremstyle{indented}
+{3pt}% space before
+{3pt}% space after
+{\addtolength{\@totalleftmargin}{3.5em}
+    \addtolength{\linewidth}{-3.5em}
+    \parshape 1 3.5em \linewidth}% body font
+{-3.5em}% indent
+{\bfseries}% header font
+{.}% punctuation
+{.5em}% after theorem header
+{}% header specification (empty for default)
+\makeatother
+
+\theoremstyle{indented}
+
+\ifhints{
+    \makeatletter
+    \let\hint\relax
+    \let\c@hintrelax
+    \let\endhint\relax
     \makeatother
+    \newtheorem{hint}{\nlen{Hint}{Hint}}
+    \renewcommand{\thedefinition}{\theoremtitle{hint}}% titel instellen
+    \tcolorboxenvironment{hint}{
+        boxrule=0pt,
+        boxsep=0pt,
+        colback={\colorexample!4!white},
+        enhanced jigsaw,
+        %    borderline west={2pt}{0pt}{\colordefinition!45!black},
+        sharp corners,
+        before skip=1pt,
+        after skip=2pt,
+        breakable,
+    }%
+    %    \begin{trivlist}\item[\hskip \labelsep\small\bfseries Hint:\hspace{2ex}]
+        %        \small%\slshape
+        %        \stepcounter{hintLevel}
+        %        \BODY
+        %    \end{trivlist}
+    %    \addtocounter{hintLevel}{-1}
+}\else
+\newcounter{hint}   % counter needed because it is reset .... !
+\iftikzexport   % anders worden de tikz tekeningen in hints niet gegenereerd ?
+\setbox0\vbox\bgroup
+\stepcounter{hintLevel}
+\BODY
+\egroup\ignorespacesafterend
+\addtocounter{hintLevel}{-1}
+\fi % ifhandout
+\fi %ifhints
 
+\renewcommand{\important}[1]{\ensuremath{\fcolorbox{kuaccent}{kuaccent!50!white}{$#1$}}}
 
+\renewcommand{\formulevb}[2]{
 
-%
-% Engelse vertaling, vooral in mathmode
-%
-% 1. Algemene procedure
-%
+  \begin{minipage}[c]{0.5\textwidth}\makebox[\textwidth][l]{\important{#1}} \end{minipage}
+  \begin{minipage}{\dimexpr(\textwidth-0.5\textwidth)\relax}Vb: \colorbox{blue!10}{$#2$} \end{minipage}
 
+}

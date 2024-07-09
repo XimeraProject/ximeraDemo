@@ -1,6 +1,5 @@
 %%% Begin Laad packages
 
-
 \makeatletter
 \@ifclassloaded{xourse}{%
     \typeout{Start loading preamble.tex (in a XOURSE)}%
@@ -8,16 +7,22 @@
 }{%
     \typeout{Start loading preamble.tex (NOT in a XOURSE)}%
 }
-\makeatother 
+\makeatother
+
+\def\isEn\true 
+
+\pgfplotsset{compat=1.16}
 
 \usepackage{currfile}
 
-% 201908: PAS OP: babel lijkt problemen te veroorzaken met online math
+% 201908/202301: PAS OP: babel en doclicense lijken problemen te veroorzaken in .jax bestand
 % (wegens syntax error met toegevoegde \newcommands ...)
 \pdfOnly{
-    \usepackage[hyperxmp=false,type={CC},modifier={by-nc-sa},version={4.0}]{doclicense}
+    \usepackage[type={CC},modifier={by-nc-sa},version={4.0}]{doclicense}
+    %\usepackage[hyperxmp=false,type={CC},modifier={by-nc-sa},version={4.0}]{doclicense}
     \usepackage[dutch]{babel}
 }
+
 
 
 \usepackage[utf8]{inputenc}
@@ -27,11 +32,25 @@
 \usepackage{tikzsymbols}
 \usepackage{ifthen}
 %\usepackage{animate} BREAKS HTML STRUCTURE USED BY XIMERA
+\usepackage{relsize}
+
+\usepackage{eurosym}    % \euro  (€ werkt niet in xake ...?)
+\usepackage{fontawesome} % smileys etc
+
+% Nuttig als ook interactieve beamer slides worden voorzien:
+\providecommand{\p}{} % default nothing ; potentially usefull for slides: redefine as \pause
+%providecommand{\p}{\pause}
+
+    % Layout-parameters voor het onderschrift bij figuren
+\usepackage[margin=10pt,font=small,labelfont=bf, labelsep=endash,format=hang]{caption}
+%\usepackage{caption} % captionof
+%\usepackage{pdflscape}    % landscape environment
 
 % Met "\newcommand\showtodonotes{}" kan je todonotes tonen (in pdf/online)
 % 201908: online werkt het niet (goed)
 \providecommand\showtodonotes{disable}
-\usepackage[\showtodonotes]{todonotes}
+\providecommand\todo[1]{\typeout{TODO #1}}
+%\usepackage[\showtodonotes]{todonotes}
 %\usepackage{todonotes}
 
 %
@@ -56,8 +75,74 @@
 
 %%% Einde Ximera specifieke zaken
 
+%
+% define softer blue/red/green, use KU Leuven base colors for blue (and dark orange for red ?)
+%
+% todo: rather redefine blue/red/green ...?
+%\definecolor{xmblue}{rgb}{0.01, 0.31, 0.59}
+%\definecolor{xmred}{rgb}{0.89, 0.02, 0.17}
+\definecolor{xmdarkblue}{rgb}{0.122, 0.671, 0.835}   % KU Leuven Blauw
+\definecolor{xmblue}{rgb}{0.114, 0.553, 0.69}        % KU Leuven Blauw
+\definecolor{xmgreen}{rgb}{0.13, 0.55, 0.13}         % No KULeuven variant for green found ...
+
+\definecolor{xmaccent}{rgb}{0.867, 0.541, 0.18}      % KU Leuven Accent (orange ...)
+\definecolor{kuaccent}{rgb}{0.867, 0.541, 0.18}      % KU Leuven Accent (orange ...)
+
+\colorlet{xmred}{xmaccent!50!black}                  % Darker version of KU Leuven Accent
+
+\providecommand{\blue}[1]{{\color{blue}#1}}    
+\providecommand{\red}[1]{{\color{red}#1}}
+
+\renewcommand\CancelColor{\color{xmaccent!50!black}}
+
+% werkt in math en text mode om MATH met oranje (of grijze...)  achtergond te tonen (ook \important{\text{blabla}} lijkt te werken)
+%\newcommand{\important}[1]{\ensuremath{\colorbox{xmaccent!50!white}{$#1$}}}   % werkt niet in Mathjax
+%\newcommand{\important}[1]{\ensuremath{\colorbox{lightgray}{$#1$}}}
+\newcommand{\important}[1]{\ensuremath{\colorbox{orange}{$#1$}}}   % TODO: kleur aanpassen voor mathjax; wordt overschreven infra!
+
+
+% Uitzonderlijk kan met \pdfnl in de PDF een newline worden geforceerd, die online niet nodig/nuttig is omdat daar de regellengte hoe dan ook niet gekend is.
+\ifdefined\HCode%
+\providecommand{\pdfnl}{}%
+\else%
+\providecommand{\pdfnl}{%
+  \\%
+}%
+\fi
+
+% Uitzonderlijk kan met \handoutnl in de handout-PDF een newline worden geforceerd, die noch online noch in de PDF-met-antwoorden nuttig is.
+\ifdefined\HCode
+\providecommand{\handoutnl}{}
+\else
+\providecommand{\handoutnl}{%
+\ifhandout%
+  \nl%
+\fi%
+}
+\fi
+
+
+
+% \cellcolor IGNORED by tex4ht ?
+% \begin{center} seems not to wordk
+    % (missing margin-left: auto;   on tabular-inside-center ???)
+%\newcommand{\importantcell}[1]{\ensuremath{\cellcolor{lightgray}#1}}  %  in tabular; usablility to be checked
+\providecommand{\importantcell}[1]{\ensuremath{#1}}     % no mathjax2 support for colloring array cells
+
+\pdfOnly{
+  \renewcommand{\important}[1]{\ensuremath{\colorbox{kuaccent!50!white}{$#1$}}}
+  \renewcommand{\importantcell}[1]{\ensuremath{\cellcolor{kuaccent!40!white}#1}}   
+}
+
 %%% Tikz styles
+
+
+\pgfplotsset{compat=1.16}
+
 \usetikzlibrary{trees,positioning,arrows,fit,shapes,math,calc,decorations.markings,through,intersections,patterns,matrix}
+
+\usetikzlibrary{decorations.pathreplacing,backgrounds}    % 5/2023: from experimental
+
 
 \usetikzlibrary{angles,quotes}
 
@@ -69,12 +154,6 @@
 \pgfplotsset{
 	plot/.style={no marks,samples=50}
 }
-
-% define softer blue/red/green
-% todo: rather redefine blue/red/green ...?
-\definecolor{xmblue}{rgb}{0.01, 0.31, 0.59}
-\definecolor{xmred}{rgb}{0.89, 0.02, 0.17}
-\definecolor{xmgreen}{rgb}{0.13, 0.55, 0.13}
 
 \newcommand{\xmPlotsColor}{
 	\pgfplotsset{
@@ -120,6 +199,56 @@
 %\fi
 %%%
 
+
+%
+% Om venndiagrammen te arceren ...
+%
+\makeatletter
+\pgfdeclarepatternformonly[\hatchdistance,\hatchthickness]{north east hatch}% name
+{\pgfqpoint{-1pt}{-1pt}}% below left
+{\pgfqpoint{\hatchdistance}{\hatchdistance}}% above right
+{\pgfpoint{\hatchdistance-1pt}{\hatchdistance-1pt}}%
+{
+	\pgfsetcolor{\tikz@pattern@color}
+	\pgfsetlinewidth{\hatchthickness}
+	\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}
+	\pgfpathlineto{\pgfqpoint{\hatchdistance}{\hatchdistance}}
+	\pgfusepath{stroke}
+}
+\pgfdeclarepatternformonly[\hatchdistance,\hatchthickness]{north west hatch}% name
+{\pgfqpoint{-\hatchthickness}{-\hatchthickness}}% below left
+{\pgfqpoint{\hatchdistance+\hatchthickness}{\hatchdistance+\hatchthickness}}% above right
+{\pgfpoint{\hatchdistance}{\hatchdistance}}%
+{
+	\pgfsetcolor{\tikz@pattern@color}
+	\pgfsetlinewidth{\hatchthickness}
+	\pgfpathmoveto{\pgfqpoint{\hatchdistance+\hatchthickness}{-\hatchthickness}}
+	\pgfpathlineto{\pgfqpoint{-\hatchthickness}{\hatchdistance+\hatchthickness}}
+	\pgfusepath{stroke}
+}
+%\makeatother
+
+\tikzset{
+    hatch distance/.store in=\hatchdistance,
+    hatch distance=10pt,
+    hatch thickness/.store in=\hatchthickness,
+   	hatch thickness=2pt
+}
+
+\colorlet{circle edge}{black}
+\colorlet{circle area}{blue!20}
+
+
+\tikzset{
+    filled/.style={fill=green!30, draw=circle edge, thick},
+    arceerl/.style={pattern=north east hatch, pattern color=blue!50, draw=circle edge},
+    arceerr/.style={pattern=north west hatch, pattern color=yellow!50, draw=circle edge},
+    outline/.style={draw=circle edge, thick}
+}
+
+
+
+
 %%% Updaten commando's
 \def\hoofding #1#2#3{\maketitle}     % OBSOLETE ??
 
@@ -140,8 +269,6 @@
 % uit Zomercursus-macro's: 
 \newcommand{\bron}[1]{\begin{scriptsize} \emph{#1} \end{scriptsize}}     % deprecated ...?
 
-% werkt in math en text mode om MATH met grijze achtergond te tonen (ook \important{\text{blabla}} lijkt te werken)
-\newcommand{\important}[1]{\ensuremath{\colorbox{lightgray}{$#1$}}}
 
 %definities nieuwe commando's - afkortingen veel gebruikte symbolen
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
@@ -214,7 +341,8 @@
 
 % om in voorbeelden/oefeningen de notatie voor afgeleiden te kunnen kiezen
 % Usage: \afg{(2\sin(x))}  (en wordt d/dx, of accent, of D )
-\newcommand{\afg}[1]{{#1}'}
+%\newcommand{\afg}[1]{{#1}'}
+\newcommand{\afg}[1]{\left(#1\right)'}
 %\renewcommand{\afg}[1]{\frac{\mathrm{d}#1}{\mathrm{d}x}}   % include in relevant exercises ...
 %\renewcommand{\afg}[1]{D{#1}}
 
@@ -262,6 +390,65 @@
 }
 
 
+% -> geef een abstracte-formule-met-rechts-een-concreet-voorbeeld
+% VB:  \formulevb{a^2+b^2=c^2}{3^2+4^2=5^2}
+%
+\ifdefined\HCode
+\NewEnviron{xmdiv}[1]{\HCode{\Hnewline<div class="#1">\Hnewline}\BODY{\HCode{\Hnewline</div>\Hnewline}}}
+\else
+\NewEnviron{xmdiv}[1]{\BODY}
+\fi
+
+\providecommand{\formulevb}[2]{
+	{\centering
+
+    \begin{xmdiv}{xmformulevb}    % zie css voor online layout !!!
+	\begin{tabular}{lcl}
+		\important{#1}
+		&  &
+		Vb: $#2$
+		\end{tabular}
+	\end{xmdiv}
+
+	}
+}
+
+\ifdefined\HCode
+\providecommand{\vb}[1]{%
+    \HCode{\Hnewline<span class="xmvb">}#1\HCode{</span>\Hnewline}%
+}
+\else
+\providecommand{\vb}[1]{
+    \colorbox{blue!10}{#1}
+}
+\fi
+
+\ifdefined\HCode
+\providecommand{\xmcolorbox}[2]{
+	\HCode{\Hnewline<div class="xmcolorbox">\Hnewline}#2\HCode{\Hnewline</div>\Hnewline}
+}
+\else
+\providecommand{\xmcolorbox}[2]{
+  \cellcolor{#1}#2
+}
+\fi
+
+
+\ifdefined\HCode
+\providecommand{\xmopmerking}[1]{
+ \HCode{\Hnewline<div class="xmopmerking">\Hnewline}#1\HCode{\Hnewline</div>\Hnewline}
+}
+\else
+\providecommand{\xmopmerking}[1]{
+	{\footnotesize #1}
+}
+\fi
+% \providecommand{\voorbeeld}[1]{
+% 	\colorbox{blue!10}{$#1$}
+% }
+
+
+
 % Hernoem Proof naar Bewijs, nodig voor HTML versie
 \renewcommand*{\proofname}{Bewijs}
 
@@ -295,13 +482,23 @@
     }
     }    
 \else
-   \newenvironment{oplossing}[1][onzichtbaar]
+% ONLY for HTML; xmoplossing is styled with css, and is not, and need not be a LaTeX environment
+% THUS: it does NOT use feedback anymore ...
+%    \NewEnviron{oplossing}{\begin{expandable}{xmoplossing}{\nlen{Toon uitwerking}{Show solution}}{\BODY}\end{expandable}}
+    \newenvironment{oplossing}[1][onzichtbaar]
    {%
-       \begin{feedback}[solution]   	
+       \begin{expandable}{xmoplossing}{}
    }
    {%
-   	   \end{feedback}
+   	   \end{expandable}
    } 
+%     \newenvironment{oplossing}[1][onzichtbaar]
+%    {%
+%        \begin{feedback}[solution]   	
+%    }
+%    {%
+%    	   \end{feedback}
+%    } 
 \fi
 
 \ifhandout%
@@ -322,13 +519,19 @@
     }
     }    
 \else
+\ifdefined\HCode
    \newenvironment{uitkomst}[1][onzichtbaar]
-   {%
-       \begin{feedback}[solution]   	
-   }
-   {%
-   	   \end{feedback}
-   } 
+    {%
+        \begin{expandable}{xmuitkomst}{}%
+    }
+    {%
+    	\end{expandable}%
+    } 
+\else
+  % Do NOT print 'uitkomst' in non-handout
+  %  (presumably, there is also an 'oplossing' ??)
+  \newenvironment{uitkomst}[1][onzichtbaar]{}{}
+\fi
 \fi
 
 %
@@ -356,12 +559,23 @@
 \newcounter{xmuitweiding}
 \newenvironment{xmuitweiding}[1][ ]%
 {% 
-	\refstepcounter{xmuitweiding}
-	\begin{accordion}\begin{accordion-item}[Uitweiding \arabic{xmuitweiding}: #1]%
-			\begin{xmuitweidingnofrills}%
-			}
-			{\end{xmuitweidingnofrills}\end{accordion-item}\end{accordion}}   
+	\refstepcounter{xmuitweiding}%
+    \begin{expandable}{xmuitweiding}{\nlentext{Uitweiding \arabic{xmuitweiding}: #1}{Digression \arabic{xmuitweiding}: #1}}%
+	\begin{xmuitweidingnofrills}%
+}
+{%
+    \end{xmuitweidingnofrills}%
+    \end{expandable}%
+}   
+% \newenvironment{xmuitweiding}[1][ ]%
+% {% 
+% 	\refstepcounter{xmuitweiding}
+% 	\begin{accordion}\begin{accordion-item}[Uitweiding \arabic{xmuitweiding}: #1]%
+% 			\begin{xmuitweidingnofrills}%
+% 			}
+% 			{\end{xmuitweidingnofrills}\end{accordion-item}\end{accordion}}   
 \fi
+
 
 \newenvironment{xmexpandable}[1][]{
 	\begin{accordion}\begin{accordion-item}[#1]%
@@ -377,18 +591,21 @@
 \newcommand{\TJuist}{\nlentext{ Juist }{ True }}
 \newcommand{\TFout}{\nlentext{ Fout }{ False }}
 
-\newcommand{\choiceTrue}{{\wordChoice{\choice[correct]{\TJuist}\choice{\TFout}}}}
-\newcommand{\choiceFalse}{{\wordChoice{\choice{\TJuist}\choice[correct]{\TFout}}}}
+\newcommand{\choiceTrue }{{\renewcommand{\choiceminimumhorizontalsize}{4em}\wordChoice{\choice[correct]{\TJuist}\choice{\TFout}}}}
+\newcommand{\choiceFalse}{{\renewcommand{\choiceminimumhorizontalsize}{4em}\wordChoice{\choice{\TJuist}\choice[correct]{\TFout}}}}
 
-\newcommand{\choiceYes}{{\wordChoice{\choice[correct]{\TJa}\choice{\TNee}}}}
-\newcommand{\choiceNo}{{\wordChoice{\choice{\TJa}\choice[correct]{\TNee}}}}
+\newcommand{\choiceYes}{{\renewcommand{\choiceminimumhorizontalsize}{3em}\wordChoice{\choice[correct]{\TJa}\choice{\TNee}}}}
+\newcommand{\choiceNo }{{\renewcommand{\choiceminimumhorizontalsize}{3em}\wordChoice{\choice{\TJa}\choice[correct]{\TNee}}}}
 
 % Optional nicer formatting for wordChoice in PDF
 
 \let\inlinechoiceorig\inlinechoice
 
 %\makeatletter
-\providecommand{\choiceminimumverticalsize}{\vphantom{$\frac{\sqrt{2}}{2}$}}   % minimum height of boxes (cfr infra)
+%\providecommand{\choiceminimumverticalsize}{\vphantom{$\frac{\sqrt{2}}{2}$}}   % minimum height of boxes (cfr infra)
+\providecommand{\choiceminimumverticalsize}{\vphantom{$\tfrac{2}{2}$}}   % minimum height of boxes (cfr infra)
+\providecommand{\choiceminimumhorizontalsize}{1em}   % minimum width of boxes (cfr infra)
+
 \newcommand{\inlinechoicesquares}[2][]{%
 		\setkeys{choice}{#1}%
 		\ifthenelse{\boolean{\choice@correct}}%
@@ -396,7 +613,7 @@
             \ifhandout%
                \fbox{\choiceminimumverticalsize #2}\allowbreak\ignorespaces%
             \else%
-               \fcolorbox{blue}{blue!20}{\choiceminimumverticalsize #2\checkmark}\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
+               \fcolorbox{blue}{blue!20}{\choiceminimumverticalsize #2}\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
             \fi%
 		}%
 		{% else
@@ -409,14 +626,14 @@
 		\ifthenelse{\boolean{\choice@correct}}%
 		{%
             \ifhandout%
-               \fbox{\choiceminimumverticalsize #2}\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
+               \framebox[\ifdim\choiceminimumhorizontalsize<\width\width\else\choiceminimumhorizontalsize\fi]{\choiceminimumverticalsize\ #2\ }\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
             \else%
-               \fcolorbox{blue}{blue!20}{\choiceminimumverticalsize #2\checkmark}\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
+               \fcolorbox{blue}{blue!20}{\makebox[\ifdim\choiceminimumhorizontalsize<\width\width\else\choiceminimumhorizontalsize\fi]{\choiceminimumverticalsize #2}}\allowbreak\ignorespaces\setkeys{choice}{correct=false}\ignorespaces%
             \fi%
 		}%
 		{% else
         \ifhandout%
-			\fbox{\choiceminimumverticalsize #2}\allowbreak\ignorespaces%  HACK: wat kleiner, zodat fits on line ... 	
+			\framebox[\ifdim\choiceminimumhorizontalsize<\width\width\else\choiceminimumhorizontalsize\fi]{\choiceminimumverticalsize\ #2\ }\allowbreak\ignorespaces%  HACK: wat kleiner, zodat fits on line ... 	
         \fi
 		}%
 }
@@ -517,25 +734,67 @@
 \providebool{printactivityqrcode}
 \providebool{printactivityurl}
 \providebool{printcontinuouspagenumbers}
+\providebool{numberactivitiesbysubpart}
+\providebool{addtitlenumber}
+\providebool{addsectiontitlenumber}
+\addtitlenumbertrue
+\addsectiontitlenumbertrue
 
 % The following three commands are hardcoded in xake, you can't create other commands like these, without adding them to xake as well
 %  ( gebruikt in xourses om juiste soort titelpagina te krijgen voor verschillende ximera's )
-\newcommand{\activitychapter}[1]{
-	\typeout{ACTIVITYCHAPTER #1}   % logging
+\newcommand{\activitychapter}[2][]{
+    {    
+    \ifstrequal{#1}{notnumbered}{
+        \addtitlenumberfalse
+    }{}
+    \typeout{ACTIVITYCHAPTER #2}   % logging
 	\chapterstyle
-	\activity{#1}
+	\activity{#2}
+    }
 }
-\newcommand{\activitysection}[1]{
-	\typeout{ACTIVITYSECTION #1}   % logging
+\newcommand{\activitysection}[2][]{
+    {
+    \ifstrequal{#1}{notnumbered}{
+        \addsectiontitlenumberfalse
+    }{}
+	\typeout{ACTIVITYSECTION #2}   % logging
 	\sectionstyle
-	\activity{#1}
+	\activity{#2}
+    }
 }
-% Partices worden als activity getoond om de grote blokken te krijgen online
-\newcommand{\practicesection}[1]{
-	\typeout{PRACTICESECTION #1}   % logging
+% Practices worden als activity getoond om de grote blokken te krijgen online
+\newcommand{\practicesection}[2][]{
+    {
+    \ifstrequal{#1}{notnumbered}{
+        \addsectiontitlenumberfalse
+    }{}
+    \typeout{PRACTICESECTION #2}   % logging
 	\sectionstyle
-	\activity{#1}
+	\activity{#2}
+    }
 }
+\newcommand{\activitychapterlink}[3][]{
+    {
+    \ifstrequal{#1}{notnumbered}{
+        \addtitlenumberfalse
+    }{}
+    \typeout{ACTIVITYCHAPTERLINK #3}   % logging
+	\chapterstyle
+	\activitylink[#1]{#2}{#3}
+    }
+}
+
+\newcommand{\activitysectionlink}[3][]{
+    {
+    \ifstrequal{#1}{notnumbered}{
+        \addsectiontitlenumberfalse
+    }{}
+    \typeout{ACTIVITYSECTIONLINK #3}   % logging
+	\sectionstyle
+	\activitylink[#1]{#2}{#3}
+    }
+}
+
 
 % Commando om de printstyle toe te voegen in ximera's. Zorgt ervoor dat er geen problemen zijn als je de xourses compileert
 % hack om onhandige relative paden in TeX te omzeilen
@@ -547,9 +806,27 @@
   \makeatletter
   \ifx\@onlypreamble\@notprerr\else   % ONLY if in tex-preamble   (and e.g. not when included from xourse)
     \typeout{Loading printstyle}   % logging
-	\usepackage{#1/printstyle} % mag enkel geinclude worden als je die apart compileert
-    \IfFileExists{#1/global.sty}{\usepackage{#1/global}}{}   % load global.sty if present
-  \fi
+    \usepackage{#1/printstyle} % mag enkel geinclude worden als je die apart compileert
+    \IfFileExists{#1/global.sty}{
+        \typeout{Loading printstyle-folder #1/global.sty}   % logging
+        \usepackage{#1/global}
+        }{
+        \typeout{Info: No extra #1/global.sty}   % logging
+    }   % load global.sty if present
+    \IfFileExists{global.sty}{
+        \typeout{Loading local-folder global.sty (or TEXINPUTPATH..)}   % logging
+        \usepackage{global}
+    }{
+        \typeout{Info: No folder/global.sty}   % logging
+    }   % load global.sty if present
+    \IfFileExists{\currfilebase.sty}
+    {
+        \typeout{Loading \currfilebase.sty}
+        \input{\currfilebase.sty}
+    }{
+        \typeout{Info: No local \currfilebase.sty}
+    }
+    \fi
   \makeatother
 \fi
 }
@@ -569,6 +846,12 @@
 \renewcommand{\hyperlink}[2]{\HCode{<a class="reference reference-keeptext" href="\##1">}#2\HCode{</a>}}
 \fi
 
+% Mmm, quid English ... (for keyword #1 !) ?
+\newcommand{\wikilink}[2]{
+    \hyperlink{https://nl.wikipedia.org/wiki/#1}{#2}
+    \pdfOnly{\footnote{See \url{https://nl.wikipedia.org/wiki/#1}}
+    }
+}
 
 \renewcommand{\figurename}{Figuur}
 \renewcommand{\tablename}{Tabel}
@@ -629,6 +912,27 @@
 \else
 \newcommand{\nl}{\ \par} % newline (achter heading van definition etc.)
 \fi
+
+
+% \nl enkel in handoutmode (ihb voor \wordChoice, die dan typisch veeeel langer wordt)
+\ifdefined\HCode
+\providecommand{\handoutnl}{}
+\else
+\providecommand{\handoutnl}{%
+\ifhandout%
+  \nl%
+\fi%
+}
+\fi
+
+% Could potentially replace \pdfOnline/\begin{onlineOnly} : 
+% Usage= \ifonline{Hallo surfer}{Hallo PDFlezer}
+\providecommand{\ifonline}[2]%
+{
+\begin{onlineOnly}#1\end{onlineOnly}%
+\pdfOnly{#2}
+}%
+
 
 %
 % Maak optionele 'basic' en 'extended' versies van een activity
@@ -724,8 +1028,8 @@
 \RenewEnviron{hint}
 {
 \ifhints
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape
+\begin{trivlist}\item[\hskip \labelsep\small\bfseries Hint:\hspace{2ex}]
+\small%\slshape
 \stepcounter{hintLevel}
 \BODY
 \end{trivlist}
