@@ -5,7 +5,7 @@ image: ghcr.io/ximeraproject/xake2023:v2.1
 variables:
   NB_JOBS: 4 # Hoeveelheid parallellisme
   REPO_BASE: "$CI_COMMIT_REF_NAME" # Naam van de repository / collectie van cursussen
-  REPO_BASE: "demo" # Naam van de repository / collectie van cursussen
+  REPO_BASE: "wimtesten" # Naam van de repository / collectie van cursussen
   URL_XIMERA: "https://set.kuleuven.be/voorkennis/"
 
 stages:
