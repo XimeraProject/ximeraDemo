@@ -9,7 +9,7 @@
 # Set environment variable 'export DEBUG=1' and/or use -d option for debugging/tracing
 
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
-: "${XAKE_IMAGE:=registry.gitlab.kuleuven.be/monitoraat-wet/xake:2024}"
+: "${XAKE_IMAGE:=ghcr.io/ximeraproject/xake2023:v2.1}"
 # Which folder to mount INSIDE the container, under /code  (use with care: it should contain a build.sh !)
 : "${MOUNTDIR:=$(pwd)}"
 

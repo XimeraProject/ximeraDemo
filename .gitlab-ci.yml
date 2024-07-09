@@ -1,5 +1,5 @@
 # use custom xake image
-image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:latest
+image: ghcr.io/ximeraproject/xake2023:v2.1
 #image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:1.2.1
 
 variables:
