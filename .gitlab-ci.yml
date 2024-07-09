@@ -1,10 +1,10 @@
 # use custom xake image
-image: ghcr.io/ximeraproject/xake2023:v2.1
+image: ghcr.io/ximeraproject/xake2023:v2.1.1
 #image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:1.2.1
 
 variables:
   NB_JOBS: 4 # Hoeveelheid parallellisme
-  REPO_BASE: "$CI_COMMIT_REF_NAME" # Naam van de repository / collectie van cursussen
+  # REPO_BASE: "$CI_COMMIT_REF_NAME" # Naam van de repository / collectie van cursussen
   REPO_BASE: "wimtesten" # Naam van de repository / collectie van cursussen
   URL_XIMERA: "https://set.kuleuven.be/voorkennis/"
 
@@ -97,7 +97,7 @@ deploy_job_prod:
   script:
       - REPO_XIMERA=$REPO_BASE 
       - chmod +x ./build.sh
-      - git fetch --unshallow # 
+      - git fetch # --unshallow # 
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
