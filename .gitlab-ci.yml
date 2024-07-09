@@ -37,11 +37,12 @@ build_xake_job:
   script:
       - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
       - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
-      - chmod +x ./build.sh
       - rm -rf ximera-downloads    # from cache ???
       - find . -name '*.png' -size 0 -print -delete
       - find . -name '*.svg' -size 0 -print -delete
-      - xmlatex bake
+      # Only with xake > 2.1.1
+      - type xmlatex
+      - /usr/local/bin/xmlatex -d bake
   cache: # Cache de untracked = gegenereerde files
     untracked: true
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
