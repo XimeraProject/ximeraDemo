@@ -1,0 +1,43 @@
+%
+% Voor lineaire algebra 
+%
+
+\usepackage{float}
+
+\usepackage{extarrows}   % met o.a. xrightarrow voor rijoperaties
+
+% \usetikzlibrary{cd}  % commutative diagrams : fails online
+
+\usetikzlibrary{matrix} 
+
+% \usepackage{emerald}  % fails online
+
+%\usepackage{tikz-3dplot}
+
+%\usepackage{systeme}
+%\usepackage{mathtools}    % seem to break xake compile !!!
+
+
+\newcommand{\ora}{\overrightarrow}
+\newcommand{\ba}{\begin{array}}
+\newcommand{\ea}{\end{array}}
+\newcommand{\lba}{\left[\begin{array}}
+\newcommand{\ear}{\end{array}\right]}
+\newcommand{\spil}[1]{\mbox{\put(7,0){\makebox(0,0)[b]{$#1$}}
+    \put(7,4){\circle{14}} \hspace{14 pt}}} 
+\newcommand{\spill}[1]{\mbox{\put(8,0){\makebox(0,0)[b]{$#1$}}
+    \put(8,4){\circle{16}} \hspace{16 pt}}} 
+
+\DeclareMathOperator{\Opl}{Opl}     % oplossingsverzameling
+
+% Om matrices en/ov (kolom- of rij- of andere) vectoren vet/pijltje/etc te geven
+\newcommand{\xmat}[1]{\mathbf{#1}} % undergraduate algebra version
+\newcommand{\xvec}[1]{\mathbf{#1}} % undergraduate algebra version
+\newcommand{\lvec}[1]{\overrightarrow{\mathbf{#1}}} 
+
+% Cursus I0O68A: Poedts/Keppens  Bio-ingenieurs 
+\newcommand{\Span}{\ensuremath{\mathrm{span}\,}}
+\newcommand{\Co}{\ensuremath{{co}\,}}
+
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Bld}{Bld}

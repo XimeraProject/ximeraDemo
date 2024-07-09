@@ -1,0 +1,23 @@
+% Shortcuts voor limieten
+% MERK OP: hier kan dus ook de notatie voor linker/rechterlimiet worden gekozen !!!
+% Usage: \limx geeft lim voor x-> 0;  \limx[a^2]  geeft lim voor x-> a^2 en \limxi geeft lim voor x -> \infy \limxmi -> -\infty 
+
+% Mmm, zonder de \ifblank lijkt het niet te werken in htlatex ...?
+%\newcommand{\limx}[1][]{\lim_{x \rightarrow \ifblank{#1}{0}{#1}}}
+
+\newcommand{\limxg}[1]{\underset {x \to  #1} \lim}    % g  voor Generic ...
+\newcommand{\llimxg}[1]{\underset {x \underset < \to  #1} \lim} 
+\newcommand{\rlimxg}[1]{\underset {x \underset > \to  #1} \lim}
+
+\newcommand{\limx}{\limxg{0}}     % limieten naar 0
+\newcommand{\llimx}{\llimxg{0}}
+\newcommand{\rlimx}{\rlimxg{0}}
+
+\newcommand{\limxi}{\limxg{+\infty}}  % I voor \Infty
+\newcommand{\limxmi}{\limxg{-\infty}} % MI voor Min \Infty
+\newcommand{\limxc}{\limxg{c}}     % is/was handig in de module over limieten ...
+\newcommand{\llimxc}{\llimxg{c}}
+\newcommand{\rlimxc}{\rlimxg{c}}
+
+% to be moved to preamble ...?
+\providecommand{\p}{} % default nothing ; potentially usefull for slides: redefine as \pause

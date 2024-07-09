@@ -1,0 +1,110 @@
+# use custom xake image
+image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:latest
+#image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:1.2.1
+
+variables:
+  NB_JOBS: 4 # Hoeveelheid parallellisme
+  REPO_BASE: "$CI_COMMIT_REF_NAME" # Naam van de repository / collectie van cursussen
+  REPO_BASE: "demo" # Naam van de repository / collectie van cursussen
+  URL_XIMERA: "https://set.kuleuven.be/voorkennis/"
+
+stages:
+  - build
+  - deploy
+  - deploy-prod
+
+build_pdf_job:
+  stage: build
+  script:
+      - chmod +x ./build.sh
+      # - ./build.sh cleanhandout
+      # - ./build.sh cleanstandaard
+      - ./build.sh bakehandout
+      - ./build.sh bakestandaard
+  cache: # Cache de untracked = gegenereerde files
+    untracked: true
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+  only:
+    - branches
+  artifacts:
+    paths:
+      - "ximera-downloads"
+
+build_xake_job:
+  stage: build
+  variables:
+    REPO_XIMERA: 'test'
+  script:
+      - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
+      - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
+      - chmod +x ./build.sh
+      - rm -rf ximera-downloads    # from cache ???
+      - find . -name '*.png' -size 0 -print -delete
+      - find . -name '*.svg' -size 0 -print -delete
+      - ./build.sh bake
+      - sed -i 's/tube.geogebra.org/www.geogebra.org/g' */*.html  # hack, in afwachting van aanpassing xake ....
+  cache: # Cache de untracked = gegenereerde files
+    untracked: true
+    key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
+  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+    untracked: true
+    expire_in: '23h20min' # laat ze niet oneindig lang staan op de gitlab server
+
+deploy_job-latest:
+  stage: deploy
+  variables:
+    URL_XIMERA: "https://set-p-dsb-zomercursus-latest.cloud-ext.icts.kuleuven.be/"    # Voor testen ...
+    REPO_XIMERA: 'test' # wordt overschreven
+  script:
+      - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
+      - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
+      - chmod +x ./build.sh
+      - git fetch --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
+                              # error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500 Internal Server Error
+      - git config core.fileMode false
+      - git branch -D master || true    #ignore error
+      - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
+      - ./build.sh serve
+  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+    untracked: true
+#    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
+  allow_failure: false
+
+deploy_job:
+  stage: deploy
+  variables:
+    REPO_XIMERA: 'test' # wordt overschreven
+  script:
+      - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
+      - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
+      - chmod +x ./build.sh
+      - git fetch --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
+                              # error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500 Internal Server Error
+      - git config core.fileMode false
+      - git branch -D master || true    #ignore error
+      - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
+      - ./build.sh serve
+  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+    untracked: true
+#    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
+  allow_failure: false
+
+
+deploy_job_prod:
+  stage: deploy-prod
+  variables:
+    REPO_XIMERA: 'test'  # wordt overschreven
+  script:
+      - REPO_XIMERA=$REPO_BASE 
+      - chmod +x ./build.sh
+      - git fetch --unshallow # 
+      - git config core.fileMode false
+      - git branch -D master || true    #ignore error
+      - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
+      - ./build.sh serve
+  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+    untracked: true
+    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
+  allow_failure: false
+  when: manual
+

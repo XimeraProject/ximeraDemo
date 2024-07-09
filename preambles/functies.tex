@@ -1,0 +1,108 @@
+%
+% Voor functies en machine-voorstellingen van functies
+%
+
+\usetikzlibrary{graphs}
+\usetikzlibrary{quotes}
+\usetikzlibrary{arrows,positioning,decorations.pathreplacing}
+%\usetikzlibrary{calc}
+
+\usepackage{tikz-cd}
+
+%
+%
+%  Ooit is geprobeerd om via makemathbox een box rond een functie te krijgen: werkt niet (goed) online (MathJax)
+%\usepackage{mathtools} % makemathbox ... 
+%
+%% teken een box rond iets
+%%\newcommand*{\mwbox}[1]{%
+%%	\fbox{\makebox[{\ifdim 2em <\width\width\else 2em \fi}]{\vphantom{$x^2$}#1}}%
+%%}
+%
+%\newcommand*{\mwbox}[1]{%
+%	\fbox{\vphantom{$x^2$}#1}%
+%}
+%\newcommand{\fb}[1]{\mwbox{$\mathbf{#1}$}}
+%\newcommand{\fb[1]}{\underline{\mathbf{#1}}}    % als de blokjes visueel te dominant zijn ?
+%
+
+
+% teken blokjes rond functies (in voorbeelden/oefeningen, om een visuele gelijkenis te creëren tussen de 'machine' en de 'formules')
+% (voorlopig?)  via TiKZ (nadeel: ERG traag)
+% minimal box, enkel bedoeld voor expliciete functie-notatie 
+%  allicht niet te veel gebruiken ...?
+%\tikzset{
+%	f/.style={
+%		minimum width=2em, 
+%		minimum height= 2em,
+%		font=\bfseries
+%	},
+%	fb/.style={f,rectangle,rounded corners,draw}
+%}
+
+\newcommand{\f}[1]{%
+	\makebox[{\ifdim 1.5em <\width\width\else 1.5em \fi}]{\ensuremath{\vphantom{()x^2}\mathbf{#1}}}%
+}%
+
+%{\tikz[baseline=-1ex]{\node[f]{\ensuremath{\mathbf{#1}}};}}
+%\newcommand{\fb}[1]{\tikz[baseline=-1ex]{\node[fb]{\ensuremath{\mathbf{#1}}};}}
+
+\newcommand{\fb}[1]{\framebox{\f{#1}}}
+
+\newcommand{\fc}{\fb{c}}    % shortcut, convenience ...
+\newcommand{\fx}{\fb{x}}     % shortcut, convenience ...
+
+% maak plus/maal/samenstellen even breed  (voor alignering bij definite, samen met de blokjes van heirboven)
+\newcommand{\fp}{\f{+}} %{\ensuremath{\mathmakebox[1em]+}}       %plus
+\newcommand{\fm}{\f{\cdot}}  %{\ensuremath{\mathmakebox[1em]\cdot}}   %maal
+\newcommand{\fs}{\f{\circ}}  % {\ensuremath{\mathmakebox[1em]\circ}}   %samenstelling
+
+
+
+% Styling voor functies-als-machines, op basis van de tikz 'graphs' library
+\tikzset{
+	fctie/.style={
+		rectangle, 
+		draw, 
+		fill=blue!20, 
+		node distance=1cm,     % wat is er hier precies nodig/nuttig ...?
+		minimum width=1cm, 
+		text centered, 
+		rounded corners, 
+		minimum height= 1cm,
+		thick, 
+		font=\bfseries
+	}
+}
+
+% om dubieuze redenen wordt hier nu \tikzstyle gebruikt ipv \tikzset ...?
+\tikzstyle{dom}   = [rounded rectangle,rounded rectangle west arc=none, draw, fill=blue!40, minimum width=1.5em, text centered, minimum height=2em, thick, font=\bfseries,]
+\tikzstyle{codom} = [dom]   
+%\tikzstyle{codom} = [dom,rounded rectangle east arc=none]   % als codom bv 'omgekeerd' wordt weergegeven tov dom
+
+
+% vert is een misnoemer: dient voor plus en maal (dus: meerdere inputs; was ooit een 'vertikaal' blok)
+% clone  is hetzelfde, maar dient voor meerdere outputs ...
+\tikzstyle{vert}  = [fctie,fill=blue!5]
+\tikzstyle{clone} = [fctie,fill=blue!5]
+
+%
+% Macro om grafieken te tekenen. 
+% - eerste optioneel argument bv het domein van de functie (of elk extra argument aan \plot), 
+% - eerst echt agrument: de te plotten functie
+% - tweede echt argument : extra opties aan \begin{axis} (bv xmin/xmax etc)
+% Voorbeeld: %\xmtoonfunctie[domain=1:2]{sqrt(x)}{xmin=-0.5,xmax=3.5,ymin=-0.5,ymax=2}
+% TODO: nakijken of we x- en y-schaal gelijk willen ... (nu niet het geval, kan natuurlijk worden opgegeven in arg2)
+ 
+\newcommand{\xmtoonfunctie}[3][]{
+\begin{image}[0.5\textwidth]               
+  \tikz[scale=1, baseline=(current bounding box.north)]{
+  \begin{axis}[grid = major, xlabel = $x$, ylabel = $y$, restrict y to domain=-20:20, #3]
+
+  \IfNoValueTF{#1}
+	{\plot[very thick, blue] plot[samples = 500, smooth] expression{#2};} % geen domein gegeven: domein is [xmin, xmax]
+	{\plot[very thick, blue, #1] plot[samples = 500, smooth] expression{#2};} % wel domein gegeven: gebruiken
+\end{axis}
+}
+\end{image}
+}
