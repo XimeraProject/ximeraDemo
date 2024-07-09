@@ -41,8 +41,7 @@ build_xake_job:
       - rm -rf ximera-downloads    # from cache ???
       - find . -name '*.png' -size 0 -print -delete
       - find . -name '*.svg' -size 0 -print -delete
-      - ./build.sh bake
-      - sed -i 's/tube.geogebra.org/www.geogebra.org/g' */*.html  # hack, in afwachting van aanpassing xake ....
+      - xmlatex bake
   cache: # Cache de untracked = gegenereerde files
     untracked: true
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
@@ -64,7 +63,7 @@ deploy_job-latest:
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
-      - ./build.sh serve
+      - xmlatex serve
   artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
     untracked: true
 #    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
@@ -83,7 +82,7 @@ deploy_job:
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
-      - ./build.sh serve
+      - xmlatex serve
   artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
     untracked: true
 #    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
@@ -101,7 +100,7 @@ deploy_job_prod:
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
-      - ./build.sh serve
+      - xmlatex serve
   artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
     untracked: true
     expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
