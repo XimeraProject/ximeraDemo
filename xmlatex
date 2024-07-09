@@ -42,7 +42,7 @@ fi
 
 # We're for sure running in a container now
 
-echo "XXXX Starting $0 $*"
+echo "Starting $0 $*"
 
 # utility functions for errorhandling/debugging (and logging to be added ...?)
 error() {
@@ -201,6 +201,7 @@ then
     #  It removes spurious trailing dashed in the filename of included figures/images in the html files ...
     debug Fixing svg filenames in ${FILE%.tex}.html
     sed -i.bak 's/-figure\([0-9]*\)-\.svg/-figure\1.svg/' ${FILE%.tex}.html
+    exit 0   # DUBIOUS
 elif [[ "$COMMAND" == "texPdf" ]]
 then
     # THIS OPTION IS CALLED BY xake (versions >= 2.1.1) (and ONLY with this option, at least in xake 2.1.1...!)
