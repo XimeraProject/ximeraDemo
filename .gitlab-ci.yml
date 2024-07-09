@@ -43,7 +43,7 @@ build_xake_job:
       # Only with xake > 2.1.1
       - type xmlatex
       - ls -al /root/texmf/tex/latex/ximeraLatex/
-      - /code/xmlatex -d bake || echo NOK
+      - ./xmlatex -d bake || echo NOK
   cache: # Cache de untracked = gegenereerde files
     untracked: true
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
