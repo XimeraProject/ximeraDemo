@@ -98,7 +98,7 @@ deploy_job_prod:
   script:
       - REPO_XIMERA=$REPO_BASE 
       - chmod +x ./build.sh
-      - git fetch # --unshallow # 
+      - git fetch --unshallow # 
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
