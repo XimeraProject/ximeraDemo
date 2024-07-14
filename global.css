@@ -1005,3 +1005,12 @@ span#next-activity-label {
 	  border-left: 1px solid  #1D8DB0;
 }
 }
+
+
+.en-text {
+	display: initial;
+}
+
+.nl-text {
+	display: none;
+}
