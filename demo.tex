@@ -1,33 +1,27 @@
 \documentclass{xourse}
-\def\isXourse{true}
 \input{preamble.tex}
 \addPrintStyle{.}
 
+\def\xmbaseurl{https://set.kuleuven.be/voorkennis/ximerademo/demo}
+%\handouttrue
+% \printpartfrontpagefalse
+\printactivityqrcodetrue
 
 \begin{document}
-    \xmtitle{Very Short Ximera Demo Xourse}{Ximera intro}
-
-% Give Intro number 0 !
-%\setcounter{part}{-1}
+    \xmtitle{Short Ximera Demo Xourse}{Ximera intro}
 
 \part{Ximera Demo}
-\activitychapter{demo/theorie.tex}
-\practicesection{demo/exercises.tex}
-\part{Ximera Documentation}
-%\activitychapter{auteurs/ximeraGit.tex}
-%\part{Ximera Architectuur}
-%\activitychapter{auteurs/ximeraArchitectuur.tex}
-\activitychapter{auteurs/ximeraDocumentclasses.tex}
-\activitychapter{auteurs/ximeraEnvironments.tex}
-\activitychapter{auteurs/ximeraCommands.tex}
-%\part{Ximera voor de Zomercursus}
-%\activitychapter{auteurs/ximeraZomercursus.tex}
-\activitychapter{auteurs/ximeraShowcase.tex}
-%\activitychapter{auteurs/ximeraSage.tex}
-\activitychapter{auteurs/ximeraFailcase.tex}
+    \activitychapter{demo/theorie.tex}
+    \practicesection{demo/exercises.tex}
 
+\part{Ximera Documentation}
+    \activitychapter{auteurs/ximeraDocumentclasses.tex}
+    \activitychapter{auteurs/ximeraEnvironments.tex}
+    \activitychapter{auteurs/ximeraCommands.tex}
+    \activitychapter{auteurs/ximeraShowcase.tex}
+    \activitychapter{auteurs/ximeraFailcase.tex}
 
 \part{GIT Documentation}
-\activitychapter{git/gitConcepts.tex}
+    \activitychapter{git/gitConcepts.tex}
 
 \end{document}
