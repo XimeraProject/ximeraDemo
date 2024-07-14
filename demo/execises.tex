@@ -1,0 +1,192 @@
+
+\documentclass{ximera}
+\input{../preamble.tex}
+\addPrintStyle{..}
+
+\begin{document}
+    \author{Wim Obbels}
+    \xmtitle{Simple exercises}{}
+    \label{xim:simple_exercies}
+
+This document contains some simple exercises to show the functionality of Ximera. It can also serve as a testcase, and as a source to copy pieces of code from.
+
+
+\begin{exercise}    
+    Solve the following questions that use the command \verb|\answer|. Compare the \LaTeX-code with the PDF and the online version.
+	\begin{question}\label{itm:showCase:eerste_oefening}
+        $1+1 = \answer{2}$ \hspace{2cm} (code:  \verb|\answer{2}| )
+
+        \begin{hint} 
+            Try to enter \vzerb|1+1|. See \hyperref[exc:answer_integer]{next question} to prevent this.
+        \end{hint} 
+        \begin{oplossing}
+            A simple exercise. % Note that \verb|1+1| is also a correct answer.
+        \end{oplossing}
+    \end{question}
+
+    \begin{question}\label{itm:showCase:eerste_oefening}
+        $1+1 = \answer[format=integer]{2}$ \hspace{2cm} (code:  \verb|\answer[format=integer]{2}| )
+        \begin{oplossing}
+            Now you can only enter an integer. The dubious answer $1+1$ is no longer possible.
+        \end{oplossing}
+    \end{question}
+
+    \begin{question}
+        $1+1 = \answer[given]{2}$ \hspace{2cm} (code:  \verb|\answer[given]{2}| )
+
+        \begin{oplossing}
+           With the option \lq given\rq the answer is printed  \textit{also in the handout}. 
+            In the standard PDF, an additional block is added to make it stand out.
+            Online this option makes no difference.
+
+            Note: there are/will be other options to manipulate showing answers/solutions in handout PDF's.
+        \end{oplossing}
+    \end{question}
+
+    \begin{question}
+         $\frac{1}{2} =  \answer{\frac{1}{2}}$  and $1/2=\answer{1/2}$ and $0.5 = 0,5 =\answer{0.5}$
+
+         Here \verb|\answer{\frac{1}{2}}|,  respectively \verb|\answer{1/2}| and \verb|\answer{0.5}| are used.
+
+         In each case, the same answers are correct, so both $1/2$ and $0.5$ as, for example, $1-0.5$.
+
+         Use a point to enter decimals. 
+         \\
+         Whether there is a comma or point in the exercise, you decide for yourself.
+
+         CAUTION: Use only \verb|\frac| for fractions (and not \verb|\dfrac|, because that doesn't work online. But \verb|\answer| does work in display mode, and then you get the \verb|\dfrac| output with the answer.) 
+    \end{question}
+
+    \begin{question}
+        Enter the square root of $x$ to the power of $\log 2$:   $\answer[onlineshowanswerbutton]{\sqrt{x^{\log 2}}}$
+
+       Here \verb|\answer[onlineshowanswerbutton]{\sqrt{x^{\log 2}}}| is used, so that more complex answers can be entered, but with \verb|\answer[onlineshowanswerbutton]| you can also directly show the correct answer via an additional key. 
+
+       The result of the exercise will then be worthless: the answer is always correct ... (unless the author has made a mistake).
+    \end{question}
+
+	\begin{question}
+        Write with a summation the sum of the square roots of the numbers $1$ to $100$ each to the power of $\log 2$: $\answer[onlinenoinput]{\sum_x^{x=100}(\sqrt{x^{\log 2}})}$
+
+        With \verb|\answer[onlinenoinput]{\sum_x^{x=100}(\sqrt{x^{\log 2}})}| not even an input field is provided for complex answers. 
+        With \verb|\answer[onlinenoinput]| only a button 'Show Answer' appears, you can't enter anything.
+
+    \end{question}
+
+    \begin{question}
+        $\frac{1}{3} =  \answer[tolerance=.05]{0.33}$  
+
+        Use \verb|\answer[tolerance=.05]{0.33}| to tolerate rounding. You may deviate by 0.05.
+    \end{question}
+\end{exercise}
+
+\begin{exercise}
+       Solve the following multiple choice questions:
+    \begin{question}
+        $1+1 = $\wordChoice{\choice[correct]{$2$}\choice{$3$}\choice{neither of the first two options}\choice{the third option}}
+        \hspace{2cm} (code:  \verb|\wordChoice{...}| )
+
+    \end{question}
+    \begin{question}
+        $1+1 = $\begin{multipleChoice} \choice[correct]{$2$}\choice{$3$}\choice[correct]{$3-1$}\choice{neither of the previous answers}\choice{the previous answer}\end{multipleChoice}
+
+        The \verb|\begin{multipleChoice}| command provides a table in HTML with a maximum of one choice. There can be multiple correct answers, but you can/have to select only one!
+
+    \end{question}
+    \begin{question} 
+        $1+1 = $\begin{selectAll} \choice[correct]{$2$}\choice{$3$}\choice[correct]{$3-1$}\choice{neither of the previous answers}\choice{the previous answer}\end{selectAll}
+
+        The \verb|\begin{selectAll}| command provides a table in HTML where \textit{all} correct choices must be selected.    
+    \end{question}
+
+\end{exercise}
+
+\begin{exercise}
+    Solve the following more difficult questions with hints and feedback. \\
+    Compare the questions in the PDF with the online version.
+
+        \begin{question} % (Use the hint!)
+          $2+2 = $\wordChoice{\choice{$2$}\choice{$3$}\choice[correct]{$4$}\choice{neither of the previous answers}\choice{the previous answer}}
+          \begin{hint}
+              By definition, $2 = 1+1$, and addition is associative.
+           \end{hint}  
+           \begin{hint}
+              For $1+1+1+1$ we have introduced a shorter notation.
+           \end{hint}
+           \begin{feedback}[correct] 
+              Congratulations, you can already calculate very well! Keep it up. 
+              This feedback only appears for a correct answer.
+           \end{feedback}          
+        \end{question}
+
+        \begin{question}
+          If $y=4+4$ then $y = \answer[format=integer,id=y]{8}$ 
+
+          The answer is an integer, but first try for example $4.4$, and then an incorrect integer, for example $7$.)
+          \begin{hint}[0]
+              Have you tried $7$ yet (because then you get very useful feedback!)
+          \end{hint}
+          \begin{hint}
+            Review the answer to the previous question for the precise meaning of the symbol $4$!
+          \end{hint}
+          \begin{hint}[3]
+            This is just elementary addition, yes ....
+          \end{hint}
+
+          \begin{feedback}[correct]
+              Correct!
+          \end{feedback}
+          \begin{feedback}[attempt]
+            The organization would like to sincerely thank you for your commendable attempt to answer this question.
+
+            (This feedback with \verb|[attempt]| appears with every attempted answer.)   
+           \end{feedback}
+
+          \begin{feedback}[y==7]
+            Well, you follow the instructions very accurately. But we also provide interesting feedback for other incorrect answers.
+
+            (This feedback with \verb|[y==7]| appears only with an attempted answer of $7$.)   
+
+          \end{feedback}
+          \begin{feedback}[y==8]
+          Congratulations. You have mastered this module sufficiently. You are now well prepared to move on to the fascinating problem of \link[HoTT]{https://github.com/HoTT/HoTT}
+
+          (This feedback with \verb|[y==8]| appears only with the correct answer.)   
+
+          \end{feedback}
+          \begin{feedback}[y<7]
+              Mmm, that's a bit too little. Check your calculations again.
+
+              (This feedback with \verb|[y<7]| appears only with an answer that is too small.)   
+            \end{feedback}
+          \begin{feedback}[y>8]
+              Mmm, that's a bit too much. Check your calculations again.
+
+              (This feedback with \verb|[y>7]| appears only with an answer that is too large.)   
+
+           \end{feedback}
+       \end{question}
+
+	\begin{question}
+		Some answers are too difficult to be entered, and then \verb|\answer[onlinenoinput]| only shows a 'Show Answer' button:
+
+		Write with a summation the sum of the square roots of the numbers $1$ to $100$ each to the power of $\log 2$: $\answer[onlinenoinput]{\sum_x^{x=100}(\sqrt{x^{\log 2}})}$
+
+        % todo: investigate ;-)
+%        (Note:  on 23/11/2020 this did \textsc{not} work.)
+		\begin{solution}
+			Here comes a solution to the exercise.
+		\end{solution}
+	\end{question}
+	\begin{question}\label{itm:showCase:laatste_oefening}
+		Sometimes answers can be entered, but it is not necessarily useful, and then \verb|\answer[onlineshowanswerbutton]| shows an additional key to display the correct answer:
+
+        Write the square root of $x$ to the power of $\log 2$?  $\answer[onlineshowanswerbutton]{\sqrt{x^{\log 2}}}$
+		\begin{solution}[show]
+			Here comes a solution to the exercise.
+		\end{solution}
+	\end{question}
+\end{exercise}
+
+
+\end{document}
