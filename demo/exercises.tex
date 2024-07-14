@@ -13,18 +13,18 @@ This document contains some simple exercises to show the functionality of Ximera
 
 \begin{exercise}    
     Solve these simple questions that use the command \verb|\answer|. Compare the \LaTeX-code with the PDF and the online version.
-	\begin{question}\label{itm:showCase:eerste_oefening}
+	\begin{question}
         $1+1 = \answer{2}$ \hspace{2cm} (code:  \verb|\answer{2}| )
 
         \begin{hint} 
-            Try to enter \verb|1+1|. See \hyperref[exc:answer_integer]{next question} to prevent this.
+            Try to enter $1+1$. See \hyperref[exc:answer_integer]{next question} to prevent this.
         \end{hint} 
         \begin{oplossing}
             A simple exercise. % Note that \verb|1+1| is also a correct answer.
         \end{oplossing}
     \end{question}
 
-    \begin{question}\label{exc:answer_integerà}\label{itm:showCase:eerste_oefening}
+    \begin{question}\label{exc:answer_integer}
         $1+1 = \answer[format=integer]{2}$ \hspace{2cm} (code:  \verb|\answer[format=integer]{2}| )
         \begin{oplossing}
             Now you can only enter an integer. The dubious answer $1+1$ is no longer possible.
@@ -44,16 +44,12 @@ This document contains some simple exercises to show the functionality of Ximera
     \end{question}
 
     \begin{question}
-         $\frac{1}{2} =  \answer{\frac{1}{2}}$  and $1/2=\answer{1/2}$ and $0.5 = 0,5 =\answer{0.5}$
+         $\frac{1}{2} =  \answer{\frac{1}{2}}$  and $1/2=\answer{1/2}$ and $0.5 =\answer{0.5}$
 
          Here \verb|\answer{\frac{1}{2}}|,  respectively \verb|\answer{1/2}| and \verb|\answer{0.5}| are used.
-
+         \begin{hint}
          In each case, the same answers are correct, so both $1/2$ and $0.5$ as, for example, $1-0.5$.
-
-         Use a point to enter decimals. 
-         \\
-         Whether there is a comma or point in the exercise, you decide for yourself.
-
+         \end{hint}
          CAUTION: Use only \verb|\frac| for fractions (and not \verb|\dfrac|, because that doesn't work online. But \verb|\answer| does work in display mode, and then you get the \verb|\dfrac| output with the answer.) 
     \end{question}
 
