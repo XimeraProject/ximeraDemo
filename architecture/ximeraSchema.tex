@@ -1,0 +1,255 @@
+\documentclass{ximera}
+\input{../preamble.tex}
+
+\addPrintStyle{..}
+
+\begin{document}
+    \author{Wim Obbels}
+	\xmtitle{Ximera Schematisch Overzicht}{}
+    \label{xim:ximeraSchema}
+
+    
+\subsection{Inleiding}
+
+Ximera is een open source \LaTeX\  module, ontwikkeld aan Ohio State University, die twee nieuwe \textit{documentclasses} \verb|ximera| en \verb|xourse| definieert.
+Hierbij komen enkele nieuwe \textit{macro's} en nieuwe \textit{environments} beschikbaar met extra functionaliteit om van .tex bestanden niet alleen PDF's te genereren, maar ook interactieve HTML webpagina's. Voor de HTML-versie wordt gebruik gemaakt van \href{https://tug.org/tex4ht/}{TeX4ht}, vooral de interactiviteit, opbouw en integratie met een eigen webserver is specifiek Ximera.
+
+Aan de KU Leuven is de Ximera-broncode aangepast en verder ontwikkeld, en wordt het systeem gebruikt voor voorbereidingstrajecten wiskunde, fysica en chemie.
+
+Ximera bevat dus enerzijds een TeX module met de documentclasses \verb|ximera| en \verb|xourse|, maar anderzijds ook een buildomgeving ('xake', naar analogie met 'make' voor bv C-programma's) en een webserver waarop de cursussen automatisch worden gepubliceerd, en waar een LTI-koppeling met bv. Toledo mogelijk is.
+
+\subsection{Ximera webserver}
+
+Voor eindgebruikers zijn er twee Ximera-webservers, bereikbaar via paden onder
+
+\url{https://set.kuleuven.be/voorkennis} (default pad) en
+
+\url{https://set.kuleuven.be/ximera-wis} (voor monitoraat).
+
+De volledige urls van beschikbare cursussen worden ofwel aangeboden via de KU Leuven website (bv via de \href{https://wet.kuleuven.be/schoolverlater/basiswiskunde}{zomercursuspagina's van Wetenschappen}), en dan is de toegang publiek en anoniem. 
+Ofwel worden de links via Toledo(-cursussen of -communities) aangeboden, al dan niet met een LTI koppeling. Bij gebruik van een LTI-koppeling zijn gebruikers automatisch ook in Ximera geauthenticeerd, en worden gedetailleerde statistieken bijgehouden.
+
+
+Beide Ximera-servers draaien in een docker-container op de Cloud Infrastructuur van de KU Leuven, beheerd via
+
+\url{https://elsschot.icts.kuleuven.be}
+
+De docker-images zijn te vinden via (access: via ICTS Cloud)
+
+\url{ https://repo.icts.kuleuven.be/ui/repos/tree/General/icts-p-icts-registry-ext-docker-local/set/dsb}
+
+
+De broncode van de Ximera-webserver is te vinden op 
+
+\url{https://gitlab.kuleuven.be/monitoraat-wet/Ximera-server}
+
+Meer info zie \hyperref[sec:ximera-webserver]{verder}.
+
+\subsection{Ximera TeX module voor auteurs}
+
+De inhoud van de Ximera-cursussen is in TeX geschreven, en moet in een git-repository worden bewaard. Ximera publiceert dan een bepaalde commit van dergelijk repo op een Ximera-webserver. 
+Dat process verloopt aan de KU Leuven volledig geautomatiseerd via gitlab pipelines: bij elke commit wordt automatisch de recentste versie gepubliceerd op een test-versie van de website, en via een kleine manuele interventie kan die al dan niet op de publieke website worden gezet.
+
+Auteurs van Ximera-inhoud kunnen triviale wijzigingen aan de TeX-code rechtstreeks via de gitlab-website aanbrengen. Bij commit wordt alles gecompileerd, en eventuele compilatie-fouten zijn raadpleegbaar via de Pipeline-pagina's van gitlab.
+
+Voor uitgebreide wijzigingen is deze werkwijze niet effectief, en is het nodig het git-repo met de TeX code te clonen, en lokaal de wijzigingen aan te brengen en te testen. 
+
+Daarvoor moet ofwel een lokale TeX-installatie beschikbaar zijn, met bovendien de Ximera TeX-module zoals te vinden op \url{https://gitlab.kuleuven.be/monitoraat-wet/ximeraLatex}. Alternatief kan worden gewerkt met docker en de docker-image zoals gegeneerd via \url{https://gitlab.kuleuven.be/monitoraat-wet/xake}.
+
+In beide gevallen moeten de wijzigingen worden gecommit en gepushed, en zorgt de gitlab-pipeline voor publicatie.
+
+\subsection{Ximera build omgeving via gitlab}
+
+Elk repository met Ximera TeX-code bevat ook een .gitlab-ci.yml bestand dat definieert hoe en waar de code moet worden gepubliceerd.
+Dat gebeurt typisch via een script build.sh, dat zelf de Ximera-buildtool xake oproept en
+
+\begin{itemize}
+    \setlength\itemsep{0em}
+    \item .html bestanden genereert  (via \texttt{xake bake})
+    \item PDF's genereert (via\texttt{xake bakePdf})
+    \item deze publiceert naar een test-versie op een opgegeven Ximera server (via \texttt{xake frost} en \texttt{xake serve})
+    \item een manuele actie voorziet om de website ook effectief te publiceren
+\end{itemize}
+
+De xake-executable zit in een container, waarvan de code te vinden is op  \url{https://gitlab.kuleuven.be/monitoraat-wet/xake}, en waarvan het image gepubliceerd is op \url{ https://repo.icts.kuleuven.be}.
+
+De pipeline wordt uitgevoerd door gitlab 'runners' die centraal op de gitlab-server beschikbaar zijn, en automatisch de juiste docker-image pullen.
+
+De authenticatie en authorisatie voor publiceren zit volledig in GITLAB: daar wordt beslist wie lees en/of schrijfrechten heeft, en wie publiceerrechten heeft (voorlopig direct gekoppeld aan schrijfrechten).
+
+\begin{xmuitweiding}[Mogelijke alternatieven:]\nl
+    
+\begin{enumerate}
+    \item de Auteur genereert en publiceert de code zelf (via 'docker xake')
+    \\ Nadeel: authenticatie en authorisatie nodig om op de Ximera Server wijzigingen aan te brengen; traceerbaarheid;  reproduceerbaarheid, ...
+    \item de Auteur start zelf een 'GITLAB runner'  (via 'docker gitlab-runner')
+    \\ Nadeel: authenticatie en autorisatie nodig om GITLAB runners te starten; mogelijk stabiliteitsprobleem  (met het docker-image voor een GITLAB runner op een Windows-PC; de linux versie is bijzonder stabiel ;-) ).
+    
+\end{enumerate}
+\end{xmuitweiding}
+
+
+\subsection{Overzicht}
+
+
+%\usetikzlibrary{positioning, fit, calc}   
+
+\tikzset{block/.style={draw, thick, text width=3cm , minimum height=2cm, % align=center,
+     rectangle split, 
+     rectangle split ignore empty parts, 
+     rectangle split parts=3,
+     rectangle split part align={center, left},
+     rounded corners=0.2cm,
+     draw},   
+line/.style={-latex}     
+}  
+
+  
+%\pdfOnly{\begin{landscape} }
+  
+\begin{image}[\textwidth]
+\begin{tikzpicture}  
+
+\node[block, fill=green] (pceind) {
+          PC Eindgebruiker
+          \nodepart{two}
+          - browser
+         };  
+
+
+\node[block, fill=orange!50!white, below=of pceind ] (pc1) {
+    PC Auteur 1
+    \nodepart{two}
+    - browser \\          
+    - git client\\ 
+    - docker client
+    \nodepart{three} Repositories:\\
+    - clone cursus1.tex    
+    }; 
+
+\node[block, fill=orange!50!white, below=0.2cm of pc1 ] (pc2) {
+    PC Auteur 2
+    \nodepart{two}
+    - browser \\          
+    (via Gitlab IDE)
+}; 
+
+
+\node[block, fill=orange!50!white,below=0.2cm of pc2  ] (pc3) {
+    PC Auteur 3
+    \nodepart{two}
+     - browser \\
+     - git client\\ 
+     - LaTeX client
+    \nodepart{three} Repositories:\\
+    - clone cursus1.tex \\
+    - clone ximera.cls
+    };  
+
+     
+\node[block,right=of pceind, fill= green,text width=11.5cm] (ximeraserver) {
+  Ximera Server (publieke website, via de ICTS Cloud en docker)
+  \nodepart{three} \url{set.kuleuven.be/voorkennis/zomercursus}
+  };  
+%
+\node[block, below right=2cm of pceind, fill=orange,text width=5cm ] (gitrunner) {  % geknoei
+    GITLAB runner
+    \nodepart{two}
+    Genereert PDF en HTML \\
+    naar Ximera Server (xake)
+}; 
+
+\node[block, right=of gitrunner, fill=orange,text width=5cm] (elsschot) {
+    Cloud Management (docker)
+    \nodepart{three} \url{elsschot.icts.kuleuven.be}
+};  
+
+
+\node[block, fill=orange!50!white,below =of gitrunner,text width=5cm     ] (gitrepo) {
+  GITLAB Repository server
+  \nodepart{two}
+    met git-repositories ((broncode):\\
+    - repo cursus1.tex\\
+    - repo cursus2.tex\\
+    - repo ximera.cls\\
+    - repo ximeraserver.js\\
+    - repo xake.go\\
+    - repo gitlabrunner.docker\\
+   updates publiceren via GITLAB runner\\
+   webpagina's beheer/diagnose\\ 
+
+    \nodepart{three}
+       \url{gitlab.kuleuven.be}
+    };  
+
+
+\node[block, right=of gitrepo, fill=orange,text width=5cm ] (dockerrepo) {
+    Docker Repository Server \\
+    ( Artifactory / FROG )
+    \nodepart{two}met docker images \\
+    - ximeraserver\\
+    - xake\\
+%    - gitlabrunner
+    \nodepart{three} \url{repo.icts.kuleuven.be}
+};  
+
+
+%\node[block, fill=orange , below=of pceind ] (pcbeheer) {
+    \node[block, fill=orange , below right=of ximeraserver] (pcbeheer) {
+        PC Beheerder
+        \nodepart{two}
+        - browser \\          
+        - git client\\
+        - docker client
+        \nodepart{three} Repositories:\\
+        - clone ximeraserver \\
+        - clone gitlabrunner
+    };  
+    
+
+
+  
+% Kader ICTS 
+
+\node[draw, fill=gray, fill opacity=0.1,inner xsep=5mm,inner ysep=6mm,
+      fit=(ximeraserver)(dockerrepo)(elsschot)(gitrepo)(gitrunner),
+      label={90:ICTS Cloud / SET-IT}] (icts) {};   
+
+% Connecties ...
+\draw[line,->] (pceind)-- (ximeraserver);  
+          
+\draw[line,<->] (pc2) -- (pc2-|gitrepo.west);  
+%\draw[line,<->] (pc1) -- (pc1-|gitrepo.west); 
+\draw[line,<->] (pc3) -- (pc3-|gitrepo.west);  
+\draw[line, ->,very thick,orange!50!white] (pc1.south east) -- node[black,above]{update} (gitrepo.north west);
+%\draw[line, ->] (pc2.north east)-- (ximeraserver.west);
+
+\draw[line,<-,very thick, orange]  (ximeraserver.south-|elsschot) -- node[black,right]{beheer} (elsschot); 
+\draw[line,<->] (elsschot) -- (dockerrepo); 
+
+\draw[line,->] (pcbeheer) |- (ximeraserver.east);  
+\draw[line,->] (pcbeheer) |- (dockerrepo.east);  
+\draw[line,->] (pcbeheer) -- (elsschot);  
+\draw[line,->] (pcbeheer.210) -- (gitrepo.north east);  
+
+\draw[line,->,very thick,orange!50!white] (gitrunner)                -- node[black,right,pos=0.5]{update} (gitrunner.north |- ximeraserver.south);  
+\draw[line,->,very thick,orange!50!white] (gitrunner.south-|gitrepo) -- node[black,left]{pull} 
+(gitrepo); 
+\draw[line,-> ] (gitrunner.south-|dockerrepo) -- (dockerrepo);  
+
+% Legende
+\node[block, fill=orange!50!white,below =4cm of pcbeheer  ] (la) {Voor Auteurs};
+\node[block, fill=orange,         below=0.1cm of la         ] (lb) {Voor Beheerders};
+\node[block, fill=green ,         above=0.1cm of la         ] (lb) {Voor Eindgebruikers};
+
+\end{tikzpicture}  
+\end{image}
+
+
+
+
+
+%\pdfOnly{\end{landscape} }
+
+
+\end{document}
