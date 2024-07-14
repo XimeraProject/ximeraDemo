@@ -45,7 +45,35 @@ with some useful \texttt{environment}s and \texttt{command}s.
 
 
 
-You can experiment with an interactive graph of the cosine function (via Desmos):
+Use \verb|\begin{definition}| for definitions, and \verb|\begin{exercise}| for exercises.
+
+\begin{definition}[Absolute value]\label{showcase:absolutevalue}\nl 
+
+	For a real number $a\in\R$, we define the \textit{absolute value} of $a$, denoted $|a|$, as
+	\[
+		|a| \perdef\displaystyle\ 
+		          \left\{
+			\begin{array}{rll  } 
+				a  & \mbox{if} & a \geq 0 \\
+				-a & \mbox{if} & a<0.
+			\end{array}\right.
+	\]
+\end{definition}
+
+\begin{exercise}\nl 
+
+    \begin{xmmulticols}
+    \begin{question} $|2-5| = \answer{3}$ \end{question}
+    \begin{question} $|5-2| = \answer[onlineshowanswerbutton]{3}$ \end{question}
+    \begin{question} $|5-\sqrt{2}| = \answer[onlinenoinput]{3.58578643763}$ \end{question}
+    \begin{question} 
+        $|1-\sqrt{2}| = $\wordChoice{\choice[correct]{$\sqrt{2} - 1$}\choice{$1-\sqrt{2}$}}
+    \end{question}
+    \end{xmmulticols}
+\end{exercise}
+
+Familiarize yourself with the (interactive!) graph of the cosine function 
+(via Desmos, implemented as \verb|\graph[xmin=-5,xmax=20,ymin=-1,ymax=1]{y=cos(x)}|):
 \[  
 \graph[xmin=-5,xmax=20,ymin=-1,ymax=1]{y=cos(x)}  
 \] 
@@ -70,21 +98,6 @@ and we only show a rather \textit{boring} graph with tikz here:
     \end{tikzpicture}
 \end{image}
 }
-
-Definitions are displayed using \verb|\begin{definition}| as follows:
-
-\begin{definition}[Absolute value]\label{showcase:absolutevalue}\nl 
-
-	For a real number $a\in\R$, we define the \textit{absolute value} of $a$, denoted $|a|$, as
-	\[
-		|a| \perdef\displaystyle\ 
-		          \left\{
-			\begin{array}{rll  } 
-				a  & \mbox{if} & a \geq 0 \\
-				-a & \mbox{if} & a<0.
-			\end{array}\right.
-	\]
-\end{definition}
 
 Remarks, on the other hand, can simply be included in the running text, or by using \verb|\begin{remark}|:
 
@@ -115,27 +128,8 @@ By default, examples also provide the correct answer in the handout version, whi
 \end{xmmulticols}
 \end{example}
 
-\begin{exercise}[Simple exercises about absolute values] \nl 
-
-    \begin{xmmulticols}
-    \begin{question} $|2-5| = \answer{3}$ \end{question}
-    \begin{question} $|5-2| = \answer[onlineshowanswerbutton]{3}$ \end{question}
-    \begin{question} $|5-\sqrt{2}| = \answer[onlinenoinput]{3.58578643763}$ \end{question}
-    \begin{question} 
-        $|1-\sqrt{2}| = $\wordChoice{\choice[correct]{$\sqrt{2} - 1$}\choice{$1-\sqrt{2}$}}
-    \end{question}
-    \end{xmmulticols}
-\end{exercise}
 
 
-In the PDF, the style can be adjusted using all standard LaTeX possibilities. For the online version, it is possible to add css files:
-	\begin{itemize}
-		\item \verb|global.css| in the root folder of the repository: all modules in the repository use this styling
-		\item \verb|xoursefilename.css| in the folder of the xoursefilename.tex file: all modules in the xourse use this styling
-		\item \verb|activityfilename.css| in the folder of the activityfilename.tex file: styling specific to 1 activity.
-	\end{itemize}
-%	The \verb|ximeraShowcase.css| file specifies in this case that the questions have a purple bar not only on the left but also on the right. 
-    % not the case ...?
 
 
 
