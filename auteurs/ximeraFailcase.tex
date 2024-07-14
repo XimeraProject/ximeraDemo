@@ -13,7 +13,7 @@
 
 \label{xim:failcase}
 
-\section {Mathmode and co}
+\xmsection {Mathmode and co}
 
 Mathmode is displayed online via MathJAX. That works quite well, but
 \begin{itemize}
@@ -35,13 +35,13 @@ $$
 \item Ximera implements (via some hacking!) \verb|\answer| in MathJax 2.x (but, that does NOT work in MathJAX 3.x)
 \end{itemize}
 
-\section{Answers and solutions}
+\xmsection{Answers and solutions}
 
 \begin{itemize}
 \item in \verb|\answer|, \verb|\dfrac| does not work (correct answer is counted as wrong!); use \verb|\frac|
 \end{itemize}
 
-\section {Tables and co}
+\xmsection {Tables and co}
 
 \begin{example}[align and tag sometimes behave strangely?]
 The following \verb|align| does not resize correctly in MathJAX: it jumps out of the frame to the right with relatively small fonts (resolution).
@@ -86,7 +86,7 @@ $$
 $$
 \end{example}
 
-\section {Numbering and co}
+\xmsection {Numbering and co}
 
 The numbering of parts, sections, definitions, etc. is done (at least partly) by TeX (for PDF) as well as by Ximera (for online). This is inherently somewhat subtle, and differences may arise at some point. Also, dynamically including sections/ximeras/... or not (pdf/online/handout/...) may and will possibly cause issues with numbering/pagination.
 
