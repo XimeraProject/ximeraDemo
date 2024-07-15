@@ -18,8 +18,8 @@ build_pdf_job:
   script:
       # - xmlatex cleanhandout
       # - xmlatex cleanstandaard
-      - xmlatex bakehandout
-      - xmlatex bakestandaard
+      - xmlatex -d bakehandout
+      - xmlatex -d bakestandaard
   cache: 
     untracked: true    # Cache also untracked, i.e. generated files
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
@@ -50,7 +50,7 @@ build_xake_job:
     expire_in: '23h20min' # to be checked
 
 deploy_job-latest:
-  stage: deploy
+  stage: deploy-prod
   variables:
     URL_XIMERA: "https://set-p-dsb-zomercursus-latest.cloud-ext.icts.kuleuven.be/"    # only for tests ...
   script:
@@ -65,6 +65,7 @@ deploy_job-latest:
   artifacts: 
     untracked: true
   allow_failure: false
+  when: manual    
 
 deploy_job:
   stage: deploy
@@ -81,7 +82,6 @@ deploy_job:
     untracked: true
 #    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
   allow_failure: false
-  when: manual  
 
 deploy_job_prod:
   stage: deploy-prod
