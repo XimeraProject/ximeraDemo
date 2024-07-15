@@ -12,10 +12,10 @@
 
 \IfSubStringInString{\handoutstring}{\jobname}
 {
-\documentclass[handout]{beamer}
+\documentclass[aspectratio=169,handout]{beamer}
 \wlog{We genereren de HANDOUT versie voor \jobname.}
 }{
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 \wlog{We genereren de PRESENTATIE versie voor \jobname.}
 }
 % EndofTrucje
