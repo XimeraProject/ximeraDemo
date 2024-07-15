@@ -1,12 +1,12 @@
-# use custom xake image
+# use xake image
 image: ghcr.io/ximeraproject/xake2023:v2.1.1
 #image: registry-ext.repo.icts.kuleuven.be/set/dsb/xake:1.2.1
 
 variables:
-  NB_JOBS: 4 # Hoeveelheid parallellisme
-  # REPO_BASE: "$CI_COMMIT_REF_NAME" # Naam van de repository / collectie van cursussen
-  REPO_BASE: "wimtesten" # Naam van de repository / collectie van cursussen
-  URL_XIMERA: "https://set.kuleuven.be/voorkennis/"
+  NB_JOBS: 4                                           # Degree of parallelism  (used by xmlatex)
+  REPO_BASE: "ximerademo"                              # Name under which this repo is to be published
+  REPO_XIMERA: 'test'                                  # will be set/overwritten infra!
+  URL_XIMERA: "https://set.kuleuven.be/voorkennis/"    # ximeraServer on which to publish 
 
 stages:
   - build
@@ -16,13 +16,12 @@ stages:
 build_pdf_job:
   stage: build
   script:
-      - chmod +x ./build.sh
-      # - ./build.sh cleanhandout
-      # - ./build.sh cleanstandaard
-      - ./build.sh bakehandout
-      - ./build.sh bakestandaard
-  cache: # Cache de untracked = gegenereerde files
-    untracked: true
+      # - xmlatex cleanhandout
+      # - xmlatex cleanstandaard
+      - xmlatex bakehandout
+      - xmlatex bakestandaard
+  cache: 
+    untracked: true    # Cache also untracked, i.e. generated files
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
   only:
     - branches
@@ -32,8 +31,6 @@ build_pdf_job:
 
 build_xake_job:
   stage: build
-  variables:
-    REPO_XIMERA: 'test'
   script:
       - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
       - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
@@ -43,58 +40,50 @@ build_xake_job:
       # Only with xake > 2.1.1
       - type xmlatex
       - ls -al /root/texmf/tex/latex/ximeraLatex/
-      - ./xmlatex -d bake || echo NOK
-  cache: # Cache de untracked = gegenereerde files
+      - xmlatex -d bake
+      # - xmlatex -d bake || echo NOK    # optional: do not fail this step when bake fails ...
+  cache:
     untracked: true
     key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG"
-  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+  artifacts: # Also save untracked files
     untracked: true
-    expire_in: '23h20min' # laat ze niet oneindig lang staan op de gitlab server
+    expire_in: '23h20min' # to be checked
 
 deploy_job-latest:
   stage: deploy
   variables:
-    URL_XIMERA: "https://set-p-dsb-zomercursus-latest.cloud-ext.icts.kuleuven.be/"    # Voor testen ...
-    REPO_XIMERA: 'test' # wordt overschreven
+    URL_XIMERA: "https://set-p-dsb-zomercursus-latest.cloud-ext.icts.kuleuven.be/"    # only for tests ...
   script:
       - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
       - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
-      - chmod +x ./build.sh
       - git fetch # --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
                               # error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500 Internal Server Error
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
-      - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
+      - git checkout -B master # pretend we're on 'master' (needed for xake :-( )
       - xmlatex serve
-  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+  artifacts: 
     untracked: true
-#    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
   allow_failure: false
 
 deploy_job:
   stage: deploy
-  variables:
-    REPO_XIMERA: 'test' # wordt overschreven
   script:
       - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
       - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
-      - chmod +x ./build.sh
       - git fetch # --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
                               # error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500 Internal Server Error
       - git config core.fileMode false
-      - git branch -D master || true    #ignore error
-      - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
+      - git branch -D master || true    # ignore error
+      - git checkout -B master          # pretend we're on 'master' (needed for xake :-( ))
       - xmlatex serve
-  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+  artifacts:
     untracked: true
 #    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
   allow_failure: false
 
-
 deploy_job_prod:
   stage: deploy-prod
-  variables:
-    REPO_XIMERA: 'test'  # wordt overschreven
   script:
       - REPO_XIMERA=$REPO_BASE 
       - chmod +x ./build.sh
@@ -103,9 +92,9 @@ deploy_job_prod:
       - git branch -D master || true    #ignore error
       - git checkout -B master # doe alsof we op master zitten  (nodig voor xake :-( )      
       - xmlatex serve
-  artifacts: # Sla de untracked = gegenereerde files op zodat ze in volgende stage gebruikt kunnen worden en downloadbaar zijn
+  artifacts:
     untracked: true
-    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
+    expire_in: '24h20min'
   allow_failure: false
   when: manual
 
