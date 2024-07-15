@@ -56,7 +56,7 @@ deploy_job-latest:
   script:
       - BRANCHPART=`echo "*$CI_COMMIT_REF_NAME" | tr '[:upper:]' '[:lower:]'` # Add star and lowercase
       - REPO_XIMERA=$REPO_BASE""$BRANCHPART 
-      - git fetch # --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
+      - git fetch --unshallow # NODIG: anders POST /cena*master.git/git-receive-pack HTTP/1.1" 500  en 
                               # error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500 Internal Server Error
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
@@ -81,12 +81,12 @@ deploy_job:
     untracked: true
 #    expire_in: '24h20min' # laat ze niet oneindig lang staan op de gitlab server
   allow_failure: false
+  when: manual  
 
 deploy_job_prod:
   stage: deploy-prod
   script:
       - REPO_XIMERA=$REPO_BASE 
-      - chmod +x ./build.sh
       - git fetch --unshallow # 
       - git config core.fileMode false
       - git branch -D master || true    #ignore error
