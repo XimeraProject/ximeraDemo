@@ -5,34 +5,31 @@
 
 \begin{document}
     \author{Wim Obbels}
+    % \title{Example Theory Module}
+    % \maketitle
+    % \begin{abstract}  A simple Ximera module \end{abstract}
     \xmtitle{Example Theory Module}{A simple Ximera module}
     \label{xim:ximeraDemo}
 
 This is an example of a theory module in Ximera, 
 with some useful \hyperref[xim:ximeraEnvironments]{environments} and \hyperref[xim:ximeraCommands]{commands}.
 
-% Demo about not completely equalizing PDF and HTML ... !
+% Demo: small adhoc differences between PDF and HTML version
 \pdfOnly{
     \begin{remark}
-        It is advisable to also view the Online version, 
-        where this remark suggest to the PDF.
-
+        It is advisable to also view the Online version, where this remark refers to the PDF.
         \ifhandout
-        By the way, you are using the \textit{handout} PDF, which does \textbf{not} contain answers.
-        \\
-        There is also a so-called \textit{standard} PDF \textit{which does contain answers and hints}.
+            By the way, you are using the \textit{handout} PDF, which does \textbf{not} contain answers. \\
+            There is also a so-called \textit{standard} PDF \textit{which does contain answers and hints}.
         \else
-        You are, by the way, using the so-called \textit{standard} PDF, which \textbf{contains the answers} to the exercises.
-        \\
-        There is also a \textit{handout} PDF \textit{without the answers}.
+            You are, by the way, using the so-called \textit{standard} PDF, which \textbf{contains the answers} to the exercises. \\
+            There is also a \textit{handout} PDF \textit{without the answers}.
         \fi
-
     \end{remark}
 }
 \begin{onlineOnly}
  \begin{remark}
-    It is advisable to also view the PDF version, 
-    where this remark suggests to consult the Online version.
+    It is advisable to also view the PDF version, where this remark suggests to consult the Online version.
  \end{remark}
 \end{onlineOnly}
 

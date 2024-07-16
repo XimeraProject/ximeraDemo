@@ -8,14 +8,13 @@
     \xmtitle{Simple exercises}{}
     \label{xim:simple_exercies}
 
-This document contains some simple exercises to show the functionality of Ximera. It can also serve as a testcase, and as a source to copy pieces of code from.
-
+This document contains some simple exercises to show the functionality of Ximera. 
+It can also serve as a testcase, and as a source to copy pieces of code from.
 
 \begin{exercise}    
-    Solve these simple questions that use the command \verb|\answer|. Compare the \LaTeX-code with the PDF and the online version.
-	\begin{question}
-        $1+1 = \answer{2}$ \hspace{2cm} (code:  \verb|\answer{2}| )
-
+    Solve these simple questions that use the command \verb|\answer|. 
+    Compare the \LaTeX-code with the PDF and the online version.
+	\begin{question} $1+1 = \answer{2}$                 \hspace{2cm} (code:  \verb|\answer{2}| )
         \begin{hint} 
             Try to enter $1+1$. See \hyperref[exc:answer_integer]{next question} to prevent this.
         \end{hint} 
@@ -24,16 +23,13 @@ This document contains some simple exercises to show the functionality of Ximera
         \end{oplossing}
     \end{question}
 
-    \begin{question}\label{exc:answer_integer}
-        $1+1 = \answer[format=integer]{2}$ \hspace{2cm} (code:  \verb|\answer[format=integer]{2}| )
+    \begin{question} $1+1 = \answer[format=integer]{2}$ \hspace{2cm} (code:  \verb|\answer[format=integer]{2}| )
         \begin{oplossing}
             Now you can only enter an integer. The dubious answer $1+1$ is no longer possible.
         \end{oplossing}
     \end{question}
 
-    \begin{question}
-        $1+1 = \answer[given]{2}$ \hspace{2cm} (code:  \verb|\answer[given]{2}| )
-
+    \begin{question} $1+1 = \answer[given]{2}$          \hspace{2cm} (code:  \verb|\answer[given]{2}| )
         \begin{oplossing}
            With the option \lq given\rq the answer is printed  \textit{also in the handout}. 
             In the standard PDF, an additional block is added to make it stand out.
