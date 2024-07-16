@@ -31,6 +31,8 @@
 \usepackage{xcolor}
 %\usepackage{verbatim}
 
+\usepackage{qrcode}
+
 \setbeamertemplate{headline}{\insertframenumber/\inserttotalframenumber}
 \newcommand{\ds}{\displaystyle}
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
@@ -70,12 +72,7 @@
  \usetikzlibrary{shapes}
 %\pagestyle{empty}
 
-\title{Ximera}
-\subtitle{TUG2024}
-\author{Wim Obbels, and Bart Snapp and Jim Fowler}
-\date{July 19 2024}
-\usetheme{CambridgeUS}
-\usecolortheme{seahorse}
+
 
 \usepackage{rawfonts}
 %\input{prepictex}
@@ -91,6 +88,13 @@
    	{./pictures/}
 }
 
+\title{Ximera @ TUG2024}
+% \date{\qrcode{https://github.com/XimeraProject}}
+\author{Wim Obbels, and Bart Snapp and Jim Fowler}
+\date{July 19 2024}
+\usetheme{CambridgeUS}
+\usecolortheme{seahorse}
+
 \begin{document}
 
 \tikzset{block/.style={draw, thick, text width=3cm , minimum height=2cm, % align=center,
@@ -103,23 +107,20 @@
      line/.style={-latex}     
 }  
 
-
-
 \begin{frame}
   \titlepage
 \end{frame}
 
-
 \begin{frame}[t]{\Large\blue{Ximera}}
   \p
   \begin{itemize}[<+->]
-  \item is pronounced \lq chimera\rq
-  \item stands for 
-      \\[0.5cm]
+  % \item is pronounced \lq chimera\rq 
+  \item stands for \hfill \qrcode{https://github.com/XimeraProject}
+      \\[-0.5cm]
      {\Large\blue X}imera: {\Large\blue I}nteractive {\Large\blue M}athematical {\Large\blue E}ducational {\Large\blue R}esources for {\Large\blue A}ll
      \\[0.4cm]
-  \item is an \textbf{open-source platform}
-  \item supports authoring and publishing \textbf{interactive educational content}
+  \item is an \textbf{open-source platform}, found on \url{https://github.com/XimeraProject}
+  \item supports authoring and publishing \textbf{{\color{blue}interactive} educational content}
   \item such as worksheets, assessments, textbooks and online courses. 
   \item both in \textbf{HTML} (online) and as \textbf{PDF} (online or printed)
   \item authors only write \LaTeX %, most \LaTeX constructs are supported
@@ -135,7 +136,7 @@
 \end{frame}
 
 
-\begin{frame}[t]{Intro}
+\begin{frame}[t]{What does Ximera do ?}
   
 %  \providecommand{\answer}[1]{\blue{#1}}
 % \begin{enumerate}
@@ -149,11 +150,11 @@
 % \end{lstlisting}
 
 \begin{center}
-  \resizebox{0.6\linewidth}{!}{
+  \resizebox{0.5\linewidth}{!}{
     \includegraphics{SimultaneousOutputSource.jpg}
   }  
   \vfill
-  \resizebox{0.8\linewidth}{!}{
+  \resizebox{0.6\linewidth}{!}{
     \includegraphics{SimultaneousOutput.jpg}
   }
 \end{center}
@@ -161,10 +162,11 @@
 
 \begin{frame}{Ximera history}
   \begin{itemize}[<+->]
-    \item 2012/2013: MOOCulus and Calculus One, by Jim Fowler
-    \item 2013-2016: Grant DUE-1245433  'Interactive Textbook' \\  Jim Fowler, Bart Snapp and others
-    \item 2016-: many courses are developed, and published on https://ximera.osu.edu
-    \item 20xx: Ximera-server at University of Florida \\ Jason Nowell; variant Xronos with extra functionality
+    \item 2010: \LaTeX\ to (interactive) app on iPad, by Bart Snapp et al.
+    \item 2012/2013: MOOCulus and Calculus One, by Jim Fowler et al.
+    \item 2013-2016: Grant DUE-1245433  'Interactive Textbook' \\  Jim Fowler, Bart Snapp et al.
+    \item 2016-: many courses are developed, and published on \url{https://ximera.osu.edu}
+    \item 2016: Ximera-server at University of Florida \\ Jason Nowell; variant Xronos with extra functionality
     \item 2019: Ximera-server at KU Leuven, Belgium \\ Jesse Hoobergs and Wim Obbels; docker, layout, extra functionality
     \item 2024-2026: grant from 'Open Textbooks Pilot Program'
   \end{itemize}
@@ -181,10 +183,10 @@
 
 \begin{frame}[t]{Example (HTML)}
   \begin{center}
-    \resizebox{0.45\linewidth}{!}{
+    \resizebox{0.49\linewidth}{!}{
       \includegraphics{demo_html.jpg}
     }  
-    \resizebox{0.45\linewidth}{!}{
+    \resizebox{0.49\linewidth}{!}{
       \includegraphics{demo_htmlanswers.jpg}
     }   
   \end{center}
@@ -200,10 +202,10 @@
 
 \begin{frame}{Example (PDF activity)}
   \begin{center}
-    \resizebox{0.45\linewidth}{!}{
+    \resizebox{0.49\linewidth}{!}{
       \includegraphics{demo_handout.jpg}
     }  
-    \resizebox{0.45\linewidth}{!}{
+    \resizebox{0.49\linewidth}{!}{
       \includegraphics{demo_standard.jpg}
     }    
   \end{center}
@@ -219,12 +221,12 @@
 
 \begin{frame}{Example (PDF xourse)}
   \begin{center}
-    \resizebox{0.45\linewidth}{!}{
-      \includegraphics{demo_xourseanswers.jpg}
-    }  
-    \resizebox{0.45\linewidth}{!}{
+    \resizebox{0.49\linewidth}{!}{
       \includegraphics{demo_xourse.jpg}
-    }    
+    }     
+    \resizebox{0.49\linewidth}{!}{
+      \includegraphics{demo_xourseanswers.jpg}
+    }     
   \end{center}  
 \end{frame}
 
@@ -237,59 +239,51 @@
 % \end{frame}
 
 
-\begin{frame}{Example (source (1))}
-  
+\begin{frame}{Example (source of activity (1))}
+  \vspace{-0.3cm}
   \begin{center}
-    \resizebox{0.7\textwidth}{!}{
+    \resizebox{0.75\textwidth}{!}{
       \includegraphics{demo_source1.jpg}
     }  
-  
   \end{center}
-  
 \end{frame}
 
-\begin{frame}{Example (source (2))}
-  
+\begin{frame}{Example (source of activity (2))}
+  \vspace{-0.3cm}  
   \begin{center}
-    \resizebox{0.7\textwidth}{!}{
+    \resizebox{0.75\textwidth}{!}{
       \includegraphics{demo_source2.jpg}
     }  
-  
   \end{center}
-  
 \end{frame}
 
 \begin{frame}{Example (source of xourse)}
-  
+  \vspace{-0.3cm}
   \begin{center}
-    \resizebox{0.7\textwidth}{!}{
+    \resizebox{0.75\textwidth}{!}{
       \includegraphics{demo_sourcexourse.jpg}
     }  
-  
   \end{center}
-  
 \end{frame}
 
 
 \begin{frame}[t]{Styling (HTML/HTML(alt)/PDF)}
-  
-\begin{center}
-  \resizebox{\textwidth}{!}{
-    \includegraphics{Styling_LinearIndependence.jpg}
-  }  
-
-\end{center}
-
+  \begin{center}
+    \resizebox{\textwidth}{!}{
+      \includegraphics{Styling_LinearIndependence.jpg}
+    }  
+  \end{center}
 \end{frame}
 
-
-\begin{frame}{Additional features}
-
+\begin{frame}{More Ximera features}
   \begin{itemize}
-  \item LTI links to LMS (Blackboard/Moodle/...)
-  \item ...
+  \item LTI link to LMS (Blackboard/Moodle/\ldots); only LTI 1.1
+  \item Integration of SAGE
+  \item Integration of geogebra/youtube/google docs/xkcd
+  \item Download of Student Activity Statistics
+  \item Extra validators for answers (in javascript)
+  \item \ldots
   \end{itemize}
-
 \end{frame}
 
 
@@ -300,7 +294,7 @@
 \begin{tikzpicture}  
 
 \node[block, fill=green,text width=6cm] (pcenduser) {
-          PC Enduser
+          Student
           \nodepart{three}
           - browser
 };  
@@ -313,9 +307,9 @@
 };          
 
 \node[block, fill=orange!50!white,below=0.3cm of pcenduser, text width=6cm ] (pcauthor) {
-    PC Author (classic)
+    Author (classic)
     \nodepart{two}
-    - \LaTeX installation \\
+    - \LaTeX\ installation \\
     - git client \\ 
     - editor \\
     - {\color{red}GPG key} \\
@@ -323,7 +317,7 @@
     - browser
     \nodepart{three} Procedure:\\
     - git clone course.git \\
-    - edit \LaTeX code \\
+    - edit \LaTeX\ code \\
     - git commit \\
     - xake bake/frost/serve
 };  
@@ -350,7 +344,7 @@
     \begin{tikzpicture}  
     
     \node[block, fill=green,text width=6cm] (pcenduser) {
-              PC Enduser
+              Student
               \nodepart{three}
               - browser
     };  
@@ -363,9 +357,9 @@
     };           
 
 \node[block, fill=orange!50!white,below=0.3cm of pcenduser, text width=6cm ] (pcauthor) {
-    PC Author (local docker)
+    Author (local docker)
     \nodepart{two}
-    - \textbf{docker} \\
+    - \textbf{docker} (contains xake/TeXLive)\\
     - git client\\ 
     - editor (strong suggestion: VSCode) \\
     - {\color{red}GPG key} \\
@@ -401,7 +395,7 @@
     \begin{tikzpicture}  
     
     \node[block, fill=green,text width=6cm] (pcenduser) {
-              PC Enduser
+              Student
               \nodepart{three}
               - browser
     };  
@@ -414,7 +408,7 @@
     };          
 
 \node[block, fill=orange!50!white,below=0.3cm of pcenduser, text width=6cm ] (pcauthor) {
-    PC Author (local/cloud docker)
+    Author (local/cloud docker)
     \nodepart{two}
     - docker \\
     - git client\\ 
@@ -431,16 +425,16 @@
 };  
 
 \node[block, fill=orange!50!white,below =of ximeraserver,text width=10cm     ] (gitrepo) {
-  Github/GITLAB Repository server
+  Github/GITLAB Repository Server
   \nodepart{two}
     - repo xourse.git \\
     - docker image repository \\
     - GPG Key(s) \\
     - Authentication and Authorization
     \nodepart{two}
-    Actions or pipelines do \\
-    - xake bakePdf  (with and/or without answers) \\
-    - xake bake/frost/serve
+    Actions or Pipelines for \\
+    - docker xake bakePdf  (with and/or without answers) \\
+    - docker xake bake/frost/serve
     \nodepart{three}
        \url{https://gitlab.kuleuven.be} \\
        \url{https://github.com}
@@ -466,33 +460,47 @@
 
 \begin{frame}{Further developments}
 
-  \begin{itemize}
-  \item Gradebook
+  \begin{itemize}[<+->]
+  \item Accessibility  (both HTML and PDF)
+  \item Grade and performance database and dashboard
+  \item LTI 1.3 support
+  \item TeX-in-the-browser \\ \url{https://people.math.osu.edu/fowler.291/latex/}
   \item Better documentation
-  \item Better docker/cloud support
-  \item ...
+  \item Better VSCode/docker/cloud support
   \end{itemize}
 
 \end{frame}
 
-\begin{frame}[t]{Links / Questions}
+\begin{frame}{Grants}
 
-  \vfill
-  \begin{itemize}
-  \item github
-  \item ximera.osu.edu/xxx
-  \item set.kuleuven.be/voorkennis/...
-  \item (discord/zulip/... .?)
-  \end{itemize}
-  \vfill
+  Grants from \$500 to \$5000 are available for concrete contributions.
+  
+  Contact: ximera@math.osu.edu
 
-  Contact: xxxx
+\end{frame}
 
+\begin{frame}[t]{\centering Thanks for listening.}
+
+  
   \vfill
   \textbf{\Large Questions:} ask them right now, or mail them.
   \vfill
-  Thanks for listening.
+  \begin{itemize}
+  \item \url{https://github.com/XimeraProject}
+  \item \url{https://ximera.osu.edu/testing/examples}
+  \item \url{https://set.kuleuven.be/voorkennis/examples/examples}
+  \item \url{https://people.math.osu.edu/fowler.291/latex/}
+  % \item (discord/zulip/... .?)
+  \end{itemize}
+  \vfill
 
+  Contact: \\[0.5cm]
+
+  \begin{tabular}{ll}
+    About Ximera, grants etc.: & ximera@math.osu.edu    (Bart Snapp, Jim Fowler) \\
+    About this talk :          & wim.obbels@kuleuven.be
+  \end{tabular}    
+  \vfill
 \end{frame}
 
 
