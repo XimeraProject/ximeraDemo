@@ -92,8 +92,9 @@
 % \date{\qrcode{https://github.com/XimeraProject}}
 \author{Wim Obbels, and Bart Snapp and Jim Fowler}
 \date{July 19 2024}
-\usetheme{CambridgeUS}
-\usecolortheme{seahorse}
+%\usetheme{CambridgeUS}
+\usetheme{Boadilla}
+%\usecolortheme{seahorse}
 
 \begin{document}
 
@@ -111,19 +112,19 @@
   \titlepage
 \end{frame}
 
-\begin{frame}[t]{\Large\blue{Ximera}}
+\begin{frame}[t]{Intro}
   \p
   \begin{itemize}[<+->]
   % \item is pronounced \lq chimera\rq 
-  \item stands for \hfill \qrcode{https://github.com/XimeraProject}
-      \\[-0.5cm]
+  \item \Large\blue{Ximera} stands for \hfill \qrcode{https://github.com/XimeraProject}
+      \\[0.2cm]
      {\Large\blue X}imera: {\Large\blue I}nteractive {\Large\blue M}athematical {\Large\blue E}ducational {\Large\blue R}esources for {\Large\blue A}ll
      \\[0.4cm]
   \item is an \textbf{open-source platform}, found on \url{https://github.com/XimeraProject}
   \item supports authoring and publishing \textbf{{\color{blue}interactive} educational content}
   \item such as worksheets, assessments, textbooks and online courses. 
   \item both in \textbf{HTML} (online) and as \textbf{PDF} (online or printed)
-  \item authors only write \LaTeX %, most \LaTeX constructs are supported
+  \item authors only write \LaTeX\ code %, most \LaTeX constructs are supported
   \end{itemize}
    
   \vfill
@@ -131,7 +132,6 @@
   \p The ultimate goal: promote sustained student success and savings.
   
   % The Ximera Project is funded 2024-2026 with (no other external funding) by a $2,125,000 Open Textbooks Pilot Program grant. In the past, the Ximera Project has also recieved support from NSF Grant DUE-1245433, the Shuttleworth Foundation, the Ohio State University Department of Mathematics, and the Affordable Learning Exchange at OSU. 
-  
 
 \end{frame}
 
@@ -153,8 +153,8 @@
   \resizebox{0.5\linewidth}{!}{
     \includegraphics{SimultaneousOutputSource.jpg}
   }  
-  \vfill
-  \resizebox{0.6\linewidth}{!}{
+  \p\vfill
+  \resizebox{0.7\linewidth}{!}{
     \includegraphics{SimultaneousOutput.jpg}
   }
 \end{center}
@@ -183,10 +183,10 @@
 
 \begin{frame}[t]{Example (HTML, KU Leuven layout)}
   \begin{center}
-    \resizebox{0.49\linewidth}{!}{
+    \resizebox{0.495\linewidth}{!}{
       \includegraphics{demo_html.jpg}
     }  
-    \resizebox{0.49\linewidth}{!}{
+    \resizebox{0.495\linewidth}{!}{
       \includegraphics{demo_htmlanswers.jpg}
     }   
   \end{center}
@@ -240,22 +240,31 @@
 
 
 \begin{frame}{Example (source of activity (1))}
-  \vspace{-0.3cm}
+  %\vspace{-0.3cm}
   \begin{center}
-    \resizebox{0.75\textwidth}{!}{
-      \includegraphics{demo_source1.jpg}
+    \resizebox{0.85\textwidth}{!}{
+      \includegraphics{demo_source0.jpg}
     }  
   \end{center}
 \end{frame}
 
 \begin{frame}{Example (source of activity (2))}
-  \vspace{-0.3cm}  
+  %\vspace{-0.3cm}  
   \begin{center}
     \resizebox{0.75\textwidth}{!}{
       \includegraphics{demo_source2.jpg}
     }  
   \end{center}
 \end{frame}
+
+% \begin{frame}{Example (source of activity (3))}
+%   \vspace{-0.3cm}  
+%   \begin{center}
+%     \resizebox{0.75\textwidth}{!}{
+%       \includegraphics{demo_source1.jpg}
+%     }  
+%   \end{center}
+% \end{frame}
 
 \begin{frame}{Example (source of xourse)}
   \vspace{-0.3cm}
@@ -266,6 +275,29 @@
   \end{center}
 \end{frame}
 
+\begin{frame}{Example (hints/solutions)}
+  \begin{minipage}[t]{0.49\linewidth}
+    \vspace{0pt}
+    \resizebox{\linewidth}{!}{
+      \includegraphics{exc_closed.jpg}
+    }
+  \end{minipage}  
+  \begin{minipage}[t]{0.49\linewidth}
+    \vspace{0pt}
+    \resizebox{\linewidth}{!}{
+      \includegraphics{exc_open.jpg}      
+    }
+  \end{minipage}
+\end{frame}
+\begin{frame}{Example (hints/solutions source)}
+  \begin{center}
+  %\begin{minipage}[t]{\linewidth}
+    \resizebox{0.7\linewidth}{!}{
+      \includegraphics{exc_source.jpg}
+    }
+  %\end{minipage}  
+  \end{center}
+\end{frame}
 
 \begin{frame}[t]{Styling (HTML/HTML(alt)/PDF)}
   \begin{center}
@@ -291,7 +323,7 @@
 \begin{frame}[t]{Build Architecture ('classic')}
 
 \begin{center}
-\resizebox{0.9\linewidth}{!}{
+\resizebox{0.99\linewidth}{!}{
 \begin{tikzpicture}  
 
 \node[block, fill=green,text width=6cm] (pcenduser) {
@@ -320,7 +352,9 @@
     - git clone course.git \\
     - edit \LaTeX\ code \\
     - git commit \\
-    - xake bake/frost/serve
+    - xake bake/frost/serve \\
+    \phantom{ - \textbf{git push}}
+
 };  
 
 \draw[line,->] (pcenduser.355) -- node[above] {} (ximeraserver.175);  
@@ -341,7 +375,7 @@
 \begin{frame}[t]{Build Architecture ('local docker')}
 
   \begin{center}
-    \resizebox{0.9\linewidth}{!}{
+    \resizebox{0.99\linewidth}{!}{
     \begin{tikzpicture}  
     
     \node[block, fill=green,text width=6cm] (pcenduser) {
@@ -370,7 +404,8 @@
     - git clone course.git \\
     - edit \LaTeX code \\
     - git commit \\
-    - \textbf{docker} xake bake/frost/serve
+    - \textbf{docker} xake bake/frost/serve \\
+    \phantom{ - \textbf{git push}}
 };  
 
 \draw[line,->] (pcenduser.355) -- node[above] {} (ximeraserver.175);  
@@ -392,7 +427,7 @@
 \begin{frame}[t]{Build Architecture ('cloud')}
 
   \begin{center}
-    \resizebox{0.9\linewidth}{!}{
+    \resizebox{0.99\linewidth}{!}{
     \begin{tikzpicture}  
     
     \node[block, fill=green,text width=6cm] (pcenduser) {
@@ -475,12 +510,12 @@
 \begin{frame}{Grants}
 
   Grants from \$500 to \$5000 are available for concrete contributions.
-  
+  \\[2cm]
   Contact: ximera@math.osu.edu
 
 \end{frame}
 
-\begin{frame}[t]{\centering Thanks for listening.}
+\begin{frame}[t]{\centering Thanks for your attention.}
 
   
   \vfill
