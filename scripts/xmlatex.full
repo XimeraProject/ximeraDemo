@@ -360,6 +360,8 @@ then
         then
             echo "Using settings from .ximeraserve"
             source .ximeraserve
+	    echo GPG_KEY_ID=$GPG_KEY_ID
+	    echo GPG_KEY=${GPG_KEY:0:10}...
         fi
         if [[ -z "$GPG_KEY_ID" ]]   # still no key ...
         then
@@ -369,19 +371,19 @@ then
     debug "Loading GPG Key"
     if [[ -f "$GPG_KEY" ]]
     then
-        echo "Importing private key from $GPG_KEY"
+        echo "Importing private key from GPG_KEY=$GPG_KEY"
         # First try import as 'binary' file, if this fails, try base64 decoded version...
         if ! gpg -q $VERBOSE --import $GPG_KEY 
         then
             debug "Importing base64-encode private key from $GPG_KEY"
             cat $GPG_KEY | base64 --decode > .gpg # decode the base64 gpg key
-            gpg -q $VERBOSE --import .gpg ||  error "gpg --import failed (encoded key)"
+            gpg -q $VERBOSE --import .gpg ||  error "gpg --import failed (from encoded key in file)"
             rm .gpg # remove the gpg key so it is certainly not cached
         fi
     else 
-        echo  "Importing private key in variable GPG_KEY"
-        echo "$GPG_KEY" >.gpg # | base64 --decode > .gpg # decode the base64 gpg key
-        gpg -q $VERBOSE --import .gpg  || error "gpg --import failed (key itself in variable)"
+        echo  "Importing private key from variable GPG_KEY"
+        echo "$GPG_KEY" | base64 --decode > .gpg # decode the base64 gpg key
+        gpg -q $VERBOSE --import .gpg  || error "gpg --import failed (from key itself in variable)"
         rm .gpg # remove the gpg key so it is certainly not cached
     fi
     [[ -n "$DEBUG" ]] && gpg --list-keys
