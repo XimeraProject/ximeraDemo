@@ -2,10 +2,8 @@
 
 This repo contains a demo/showcase/documentation of Ximera
 
-## Prerequisites
-* docker (with WSL2)
-* VSCode (not really needed, but strongly advised)
 
-## Usage
+It is based on a KU Leuven version, and needs some updates 
+to make it more generally useful.
 
 
