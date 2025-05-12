@@ -1,0 +1,502 @@
+%Latex->PDF
+%
+% TRUCJE (afhankelijk van de bestandsnaam, krijg je de handout of de presentatie ...
+% (!! GEBRUIK LINUX HARD LINKS OM HETZELFDE BESTAND TWEE NAMEN TE GEVEN !!)
+% See https://tex.stackexchange.com/questions/197330/how-can-i-check-if-the-filename-of-a-latex-document-contains-a-string
+%
+\RequirePackage{substr}   % RequirePackage omdat \usepackage niet werkt voor \begin{document} !
+
+\begingroup\escapechar=-1
+\xdef\handoutstring{\string\handout}   % dirty hack, omdat anders stringcompare niet werkt
+\endgroup
+
+\IfSubStringInString{\handoutstring}{\jobname}
+{
+\documentclass[aspectratio=169,handout]{beamer}
+\wlog{We genereren de HANDOUT versie voor \jobname.}
+}{
+\documentclass[aspectratio=169]{beamer}
+\wlog{We genereren de PRESENTATIE versie voor \jobname.}
+}
+% EndofTrucje
+
+
+\usepackage[dutch]{babel}
+\usepackage{amssymb,amsmath,amsthm}
+
+\usepackage{cancel}
+\usepackage{relsize}
+
+\usepackage{listings}
+\usepackage{xcolor}
+%\usepackage{verbatim}
+
+\usepackage{qrcode}
+
+\setbeamertemplate{headline}{\insertframenumber/\inserttotalframenumber}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Nnul}{\ensuremath{\mathbb{N}_0}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\perdef}{\overset{\mathrm{def}}{=}}
+\newcommand{\Bgsin}{\mathrm{Bgsin}\,}
+\newcommand{\Bgcos}{\mathrm{Bgcos}\,}
+\newcommand{\Bgtan}{\mathrm{Bgtan}\,}
+
+\DeclareMathOperator{\dom}{dom}     % domein
+\DeclareMathOperator{\codom}{codom} % codomein
+\DeclareMathOperator{\bld}{bld}     % beeld
+\DeclareMathOperator{\graf}{graf}   % grafiek
+\DeclareMathOperator{\rico}{rico}   % richtingcoëfficient
+\DeclareMathOperator{\co}{co}       % coordinaat
+
+\newtheorem*{eigenschap}{Eigenschap}
+
+\newcommand{\p}{\pause}
+\newcommand{\important}[1]{\ensuremath{\colorbox{lightgray}{$#1$}}}
+
+\providecommand{\blue}[1]{{\color{blue}#1}}  
+\providecommand{\red}[1]{{\color{red}#1}}  
+
+\usepackage{pgf,tikz,pgfplots}
+%\pgfplotsset{compat=1.15}
+\usepackage{mathrsfs}
+\usepackage{dsfont}
+\usepackage{relsize}   % voor \mathlarger
+\usetikzlibrary{arrows}
+ \usepgfplotslibrary{fillbetween}
+ \usetikzlibrary{positioning, fit, calc} 
+ \usetikzlibrary{intersections}
+ \usetikzlibrary{shapes}
+%\pagestyle{empty}
+
+
+
+\usepackage{rawfonts}
+%\input{prepictex}
+%\input{pictex}
+%\input{postpictex}
+
+\graphicspath{
+	{../../}
+	{../}
+	{./}
+  	{../../pictures/}
+   	{../pictures/}
+   	{./pictures/}
+}
+
+\title{Ximera Deployment(s)}
+% \date{\qrcode{https://github.com/XimeraProject}}
+\author{Wim Obbels}
+\date{May 12 2025}
+%\usetheme{CambridgeUS}
+\usetheme{Boadilla}
+%\usecolortheme{seahorse}
+
+\begin{document}
+
+\tikzset{block/.style={draw, thick, text width=3cm , minimum height=2cm, % align=center,
+     rectangle split, 
+     rectangle split ignore empty parts, 
+     rectangle split parts=3,
+     rectangle split part align={center, left},
+     rounded corners=0.2cm,
+     draw},   
+     line/.style={-latex}     
+}  
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Ximera: basic concepts}
+  \begin{itemize}[<+->]
+    \item "Dwarf on the shoulders of giants" (Bernard of Chartres, 12th century; I. Newton)
+    \begin{itemize}[<+->]
+      \item \LaTeX
+      \item Tex4ht
+      \item git, docker, VS code, ....
+    \end{itemize}
+    \item "There's more than one way to do it" (Perl)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Ximera: needed/useful competences}
+  \begin{itemize}[<+->]
+    \item Some mathematics
+    \item Some didactical/educational knowledge
+    \item \LaTeX
+    \item git  (basic notions)
+    \item (optional, but strongly suggested) VS Code   (editing/building)
+    \item (optional, for local development) docker
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Ximera: needed/useful software}
+  \begin{itemize}[<+->]
+    \item A browser
+    \begin{itemize}[<+->]
+      \item ... and nothing else !
+    \end{itemize}
+    \item (optional) For local development:
+    \begin{itemize}[<+->]
+      \item git
+      \item VS Code
+      \item docker
+    \end{itemize}
+    \item NOT NEEDED: a local \TeX\  installation
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[t]{Build Architecture ('codespaces DEV')}
+
+  \begin{center}
+    \resizebox{0.99\linewidth}{!}{
+    \begin{tikzpicture}  
+    
+    \node[block, fill=white,text width=2cm] (pcenduser) {
+              Student
+              \nodepart{three}
+              - browser
+    };  
+
+    \p
+    \node[block, fill=green,below=3cm of pcenduser, text width=2cm ] (pcauthor) {
+        Author
+        \nodepart{three}
+        - browser\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+    };  
+
+    \p
+    \node[block, fill=orange!50!white,right=9.5cm of pcenduser,text width=8.5cm] (github) {
+        Github Website (Repo for Code and Docker Images)
+        \nodepart{two}
+        - (optional) Clone ximeraFirstSteps (or other repo)\\
+        - (re-)Start a Codespace\\
+        \nodepart{three} 
+        \url{https://github.com}\\
+      };        
+
+    \draw[dashed,line,->] (pcauthor.90) -- node[pos=0.2,below right] {} (github.200);
+
+    \p
+    \node[block,right=2cm of pcauthor, fill= green,text width=5cm] (ximeraserver) {
+        DEV Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://<codespace-name>-2080.app.github.dev}\\
+    };       
+
+    \node[block, fill=green,right=2cm of ximeraserver,text width=8cm] (ximeralatex) {
+    Github Codespace
+        \nodepart{two} 
+        Runs image 'ximeralatex'\\%\hline\\
+        - edit \LaTeX code (in VSCode in browser)\\
+        - Generate GPG Key (from 'Extra' menu)\\
+        - Push 'SERVE' button \\
+        - (optional) \textbf{git commit/push}
+        \nodepart{three}
+            \url{https://<codespace-name>.github.dev}
+        };  
+
+     
+
+    \node[draw, fill=gray, fill opacity=0.1,inner xsep=3mm,inner ysep=3mm,
+        fit=(ximeraserver)(ximeralatex),
+        label={-90:Codespace (VS Code runs in browser, with docker on Github infrastructure)}] (codespace) {};  
+
+    \draw[line,<-] (codespace) -- node[left] {Start Codespace} (github);  
+
+    \draw[dashed,line,->] (pcauthor.270) -- node[pos=0.2,below right] {} (ximeralatex.200);
+    \p
+
+\draw[line,->,red] (ximeralatex) -- node[above] {SERVE} (ximeraserver);  
+\draw[dashed,line,->,red] (pcauthor.0) -- node[pos=0.2,below right] {} (ximeraserver.200);
+\p
+\draw[line,->] (ximeralatex) -- node[right] {push/pull} (github);  
+
+
+\end{tikzpicture}
+  }
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}[t]{Build Architecture ('codespaces PROD-MANUAL')}
+
+  \begin{center}
+    \resizebox{0.99\linewidth}{!}{
+    \begin{tikzpicture}  
+    
+    \node[block, fill=green,text width=2cm] (pcenduser) {
+              Student
+              \nodepart{three}
+              - browser
+    };  
+
+    \node[block, fill=green,below=3cm of pcenduser, text width=2cm ] (pcauthor) {
+        Author
+        \nodepart{three}
+        - browser\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+    };  
+
+    \node[block, fill=orange!50!white,right=9.5cm of pcenduser,text width=8.5cm] (github) {
+        Github Website (Repo for Code and Docker Images)
+        \nodepart{two}
+        - (optional) Clone ximeraFirstSteps (or other repo)\\
+        - (re-)Start a Codespace\\
+        \nodepart{three} 
+        \url{https://github.com}\\
+      };        
+
+
+    \node[block,right=1cm of pcenduser, fill=orange!50!white,text width=7cm] (ximeraprodserver) {
+        PRODUCTION Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://ximera.osu.edu}\\
+        \url{https://set.kuleuven.be/voorkennis}\\
+    };       
+
+    \node[block,right=2cm of pcauthor, fill= green,text width=5cm] (ximeraserver) {
+        DEV Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://<codespace-name>-2080.app.github.dev}\\
+    };       
+
+    \node[block, fill=green,right=2cm of ximeraserver,text width=8cm] (ximeralatex) {
+    Github Codespace
+        \nodepart{two} 
+        Runs image 'ximeralatex'\\%\hline\\
+        - edit \LaTeX code (in VSCode in browser)\\
+        - Generate GPG Key (from 'Extra' menu)\\
+        - Push 'SERVE' button \\
+        - (optional) \textbf{git commit/push}
+        \nodepart{three}
+            \url{https://<codespace-name>}
+        };
+
+\node[draw, fill=gray, fill opacity=0.1,inner xsep=3mm,inner ysep=3mm,
+        fit=(ximeraserver)(ximeralatex),
+        label={-90:Codespace}] (codespace) {};  
+
+
+\draw[dashed,line,->] (pcauthor.90) -- node[pos=0.2,below right] {} (github.200);
+\draw[dashed,line,->] (pcauthor.0) -- node[pos=0.2,below right] {} (ximeraserver.200);
+\draw[dashed,line,->] (pcauthor.270) -- node[pos=0.2,below right] {} (ximeralatex.200);
+
+\draw[line,->] (ximeralatex) -- node[above] {SERVE} (ximeraserver);  
+\draw[line,->,red] (ximeralatex.180) -- node[right] {SERVE} (ximeraprodserver);  
+\draw[dashed,line,->,red] (pcenduser) -- node[right] {} (ximeraprodserver);  
+
+\draw[line,->] (ximeralatex) -- node[right] {push/pull} (github);  
+% \draw[line,<-] (ximeralatex.110) -- node[left] {Start Codespace} (github.240);  
+    \draw[line,<-] (codespace) -- node[left] {Start Codespace} (github);  
+
+\end{tikzpicture}
+  }
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}[t]{Build Architecture ('codespaces PROD-ACTION')}
+
+  \begin{center}
+    \resizebox{0.99\linewidth}{!}{
+    \begin{tikzpicture}  
+    
+    \node[block, fill=green,text width=2cm] (pcenduser) {
+              Student
+              \nodepart{three}
+              - browser
+    };  
+
+    \node[block, fill=green,below=3cm of pcenduser, text width=2cm ] (pcauthor) {
+        Author
+        \nodepart{three}
+        - browser\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+        \phantom{- VS Code}\\
+    };  
+
+    \node[block, fill=orange!50!white,right=9.5cm of pcenduser,text width=8.5cm] (github) {
+        Github Website (Repo for Code and Docker Images)
+        \nodepart{two}
+        - (optional) Clone ximeraFirstSteps (or other repo)\\
+        - (re-)Start a Codespace\\
+        \nodepart{three} 
+        \url{https://github.com}\\
+      };        
+
+    \node[block,right=1cm of pcenduser, fill=orange!50!white,text width=7cm] (ximeraprodserver) {
+        PRODUCTION Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://ximera.osu.edu}\\
+        \url{https://set.kuleuven.be/voorkennis}\\
+    };       
+
+    \node[block,right=2cm of pcauthor, fill= green,text width=5cm] (ximeraserver) {
+        DEV Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://<codespace-name>-2080.app.github.dev}\\
+    };       
+
+    \node[block, fill=green,right=2cm of ximeraserver,text width=8cm] (ximeralatex) {
+    Github Codespace
+        \nodepart{two} 
+        Runs image 'ximeralatex'\\%\hline\\
+        - edit \LaTeX code (in VSCode in browser)\\
+        - Generate GPG Key (from 'Extra' menu)\\
+        - Push 'SERVE' button \\
+        - (optional) \textbf{git commit/push}
+        \nodepart{three}
+            \url{https://<codespace-name>}
+        };
+
+\node[draw, fill=gray, fill opacity=0.1,inner xsep=3mm,inner ysep=3mm,
+        fit=(ximeraserver)(ximeralatex),
+        label={-90:Codespace}] (codespace) {};  
+
+
+\draw[dashed,line,->] (pcauthor.90) -- node[pos=0.2,below right] {} (github.200);
+\draw[dashed,line,->] (pcauthor.0) -- node[pos=0.2,below right] {} (ximeraserver.200);
+\draw[dashed,line,->] (pcauthor.270) -- node[pos=0.2,below right] {} (ximeralatex.200);
+
+\draw[line,->] (ximeralatex) -- node[above] {SERVE} (ximeraserver);  
+\draw[line,->,red] (github) -- node[above] {SERVE} node[below]{action} (ximeraprodserver);  
+\draw[dashed,line,->,red] (pcenduser) -- node[right] {} (ximeraprodserver);  
+
+\draw[line,->] (ximeralatex) -- node[right] {push/pull} (github);  
+%\draw[line,<-] (ximeralatex.110) -- node[left] {Start Codespace} (github.240);  
+    \draw[line,<-] (codespace) -- node[left] {Start Codespace} (github);  
+
+\end{tikzpicture}
+  }
+\end{center}
+\end{frame}
+
+\begin{frame}[t]{Build Architecture ('LOCAL DOCKER')}
+
+  \begin{center}
+    \resizebox{0.99\linewidth}{!}{
+    \begin{tikzpicture}  
+    
+    \node[block, fill=green,text width=2cm] (pcenduser) {
+              Student
+              \nodepart{three}
+              - browser
+    };  
+
+    \node[block, fill=green,below=3cm of pcenduser, text width=2cm ] (pcauthor) {
+        Author
+        \nodepart{three}
+        - browser\\
+        \phantom{- VS Code}\\
+        - git\\
+        - VS Code\\
+        - docker\\
+    };  
+
+    \p
+
+    \node[block, fill=orange!50!white,right=9.5cm of pcenduser,text width=8.5cm] (github) {
+        Github Website (Repo for Code and Docker Images)
+        \nodepart{two}
+        \phantom{- (optional) Clone ximeraFirstSteps (or other repo)}\\
+        \phantom{- (re-)Start a Codespace}\\
+        \nodepart{three} 
+        \url{https://github.com}\\
+      };        
+
+    \draw[dashed,line,->] (pcauthor.90) -- node[pos=0.5,above left] {clone} (github.200);
+    \p
+
+    
+    \node[block,right=2cm of pcauthor, fill= green,text width=5cm] (ximeraserver) {
+        LOCAL Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://localhost:2000}\\
+    };       
+
+    \node[block, fill=green,right=2cm of ximeraserver,text width=8cm] (ximeralatex) {
+    VSCode 
+        \nodepart{two} 
+        Starts image 'ximeralatex'\\%\hline\\
+        - edit \LaTeX code (in VSCode in browser)\\
+        - Generate GPG Key (from 'Extra' menu)\\
+        - Push 'SERVE' button \\
+        - (optional) \textbf{git commit/push}
+        \nodepart{three}
+            \phantom{\url{https://<codespace-name>}}
+        };
+
+\node[draw, fill=gray, fill opacity=0.1,inner xsep=0mm,inner ysep=3mm,
+        fit=(ximeraserver)(ximeralatex)(pcauthor),
+        label={-90:VScode + docker}] (codespace) {};  
+
+\p
+\draw[line,->,red] (ximeralatex.180) -- node[above] {SERVE} (ximeraserver);  
+\p
+\node[block,right=1cm of pcenduser, fill=orange!50!white,text width=7cm] (ximeraprodserver) {
+        PRODUCTION Ximera Server 
+        \nodepart{two} 
+        Runs image 'ximeraserver'
+        \nodepart{three} 
+        \url{https://ximera.osu.edu}\\
+        \url{https://set.kuleuven.be/voorkennis}\\
+    };       
+
+    \p
+    \draw[line,->,red] (ximeralatex.180) -- node[pos=0.6,above right] {SERVE}  (ximeraprodserver);  
+    \p
+    \draw[line,->,red] (github) -- node[above] {SERVE} node[below]{action} (ximeraprodserver);  
+\draw[line,->] (ximeralatex) -- node[right] {push/pull} (github);  
+\draw[dashed,line,->,red] (pcenduser) -- node[right] {} (ximeraprodserver);  
+
+
+
+% \draw[dashed,line,->] (pcauthor.90) -- node[pos=0.2,below right] {} (github.200);
+% \draw[dashed,line,->] (pcauthor.0) -- node[pos=0.2,below right] {} (ximeraserver.200);
+% \draw[dashed,line,->] (pcauthor.270) -- node[pos=0.2,below right] {} (ximeralatex.200);
+
+
+%\draw[line,<-] (ximeralatex.110) -- node[left] {Start Codespace} (github.240);  
+%    \draw[line,<-] (codespace) -- node[left] {Start Codespace} (github);  
+
+\end{tikzpicture}
+  }
+\end{center}
+\end{frame}
+
+
+\end{document}

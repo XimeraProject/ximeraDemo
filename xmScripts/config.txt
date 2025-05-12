@@ -2,13 +2,13 @@
 # version of Ximera xake container to use (with xmlatex)
 #
 # : "${XAKE_BASE:=ximeralatex}"
-# : "${XAKE_VERSION:=v2.6.7a}"
-: "${XAKE_VERSION:=v2.6.7a-full}"    # with texlive_full
+# : "${XAKE_VERSION:=v2.6.8}"
+: "${XAKE_VERSION:=v2.6.8-full}"    # with texlive_full
 #
 # For publishing you'll need a GPG Key
 # To generate a key-pair, fill in your name and email, and run 'xmlatex genKey'
-YOUR_NAME="DUMMY_NAME_TEST"
-YOUR_EMAIL="DUMMY_EMAIL_TEST"
+YOUR_NAME="Wim Obbels"
+YOUR_EMAIL="Wim Obbels(ximeraDemo)"
 #
 # Current 'xmlatex genKey' logic:
 #      if there is no .xmKeyFile, and it is properly .gitignored, 
